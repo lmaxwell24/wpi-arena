@@ -1,0 +1,40 @@
+{
+	"name": "wpi-arena-server",
+	"version": "1.0.0",
+	"type": "module",
+	"description": "the backend server running WPI arena",
+	"main": "index.js",
+	"author": "Luke Maxwell <lbmaxwell@wpi.edu>",
+	"license": "MIT",
+	"scripts": {
+		"build": "tsc",
+		"watch": "tsc -w",
+		"dev": "nodemon dist/index.js",
+		"start": "node dist/index.js",
+		"format": "prettier --write .",
+		"lint": "prettier --check . && eslint .",
+		"gen-env": "gen-env-types .env -o src/env.d.ts -e ."
+	},
+	"devDependencies": {
+		"@eslint/compat": "^1.3.0",
+		"@eslint/js": "^9.29.0",
+		"@types/dotenv-safe": "^8.1.6",
+		"@types/express": "^5.0.3",
+		"@types/node": "^24.0.3",
+		"@types/socket.io": "^3.0.2",
+		"eslint": "^9.29.0",
+		"eslint-config-prettier": "^10.1.5",
+		"gen-env-types": "^1.3.4",
+		"nodemon": "^3.1.10",
+		"openapi-typescript": "^7.8.0",
+		"prettier": "^3.6.0",
+		"typescript": "^5.8.3",
+		"typescript-eslint": "^8.35.0"
+	},
+	"dependencies": {
+		"dotenv-safe": "^9.1.0",
+		"express": "^5.1.0",
+		"openapi-fetch": "^0.14.0",
+		"socketio": "^1.0.0"
+	}
+}
