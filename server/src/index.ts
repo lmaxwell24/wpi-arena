@@ -97,10 +97,9 @@ const main = async () => {
 				await tfApi.declareWinner(arena.loadedMatch, req.body.who, req.body.how);
 				arena.setWinner(req.body.who, req.body.how);
 				res.send('OK');
+			} else {
+				res.send('NOT OK');
 			}
-      else{
-			res.send('NOT OK');
-      }
 		}
 	);
 

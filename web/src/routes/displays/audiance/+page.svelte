@@ -42,7 +42,7 @@
 
 		io.on('state', (newState) => {
 			matchPeriod = newState;
-      winnerStatus = null
+			winnerStatus = null;
 		});
 
 		io.on('winner', (data) => {
@@ -66,7 +66,7 @@
 					<span class="py-1">{matchState.robot1.name.toUpperCase()}</span>
 				</div>
 				<div
-					class="flex flex-1 items-center justify-center bg-{matchPeriod =='winner'
+					class="flex flex-1 items-center justify-center bg-{matchPeriod == 'winner'
 						? winnerStatus == 0
 							? '[#131323] text-white'
 							: '[#af1b33] text-white'

@@ -124,7 +124,7 @@ class TrueFinals {
 		who: 0 | 1,
 		result: 'KO' | 'TO' | 'JD' | 'TKO' | 'HLD' | 'BY' | 'DQ' | 'FF' | 'T'
 	) {
-    console.log(gameId)
+		console.log(gameId);
 		const { error } = await this.client.POST('/v1/tournaments/{tournamentID}/games/{gameID}', {
 			params: {
 				path: {

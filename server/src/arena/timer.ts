@@ -63,8 +63,8 @@ class Timer {
 		this.time = this.startTime;
 		this.precount = this.precountDuration;
 		this.updateHandlers.forEach((h) => h(this.time));
-    this.precountHandlers.forEach((h) => h(this.precount));
-    this.endHandlers.forEach((h) => h())
+		this.precountHandlers.forEach((h) => h(this.precount));
+		this.endHandlers.forEach((h) => h());
 	}
 
 	setTime(target: number) {
@@ -82,7 +82,7 @@ class Timer {
 					this.precount -= this.timerInterval / 1000;
 					if (this.precount <= 0) {
 						this.precounting = false;
-            this.precount = 0
+						this.precount = 0;
 					}
 					this.precountHandlers.forEach((h) => h(this.precount));
 				} else {
