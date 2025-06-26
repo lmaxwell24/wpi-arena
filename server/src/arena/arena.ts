@@ -30,8 +30,20 @@ class ArenaSocket {
 
 		this.io.on('connection', (socket) => {
 			this.sendState(socket);
+			this.timer.onPause(() => {
+				socket.emit('state', 'pause');
+			});
+			this.timer.onStart(() => {
+				socket.emit('state', 'start');
+			});
+			this.timer.onEnd(() => {
+				socket.emit('state', 'end');
+			});
 			this.timer.onUpdate((time) => {
 				socket.emit('timer', time);
+			});
+			this.timer.onPrecount((time) => {
+				socket.emit('precount', time);
 			});
 		});
 	}
@@ -41,6 +53,9 @@ class ArenaSocket {
 	}
 
 	start() {
+		this.timer.startWithPrecount();
+	}
+	resume() {
 		this.timer.start();
 	}
 	pause() {
@@ -62,6 +77,7 @@ class ArenaSocket {
 	}
 
 	setMatch(robot1?: Robot, robot2?: Robot, compMatch?: string) {
+		this.loadedMatch = '';
 		this.matchState = {
 			...this.matchState,
 			robot1: { ...this.matchState.robot1, ...robot1 },

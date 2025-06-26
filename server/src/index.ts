@@ -74,6 +74,7 @@ const main = async () => {
 			{ ...player2, photoUrl: player2.photoUrl as string | undefined },
 			currentMatch.name
 		);
+		arena.setMatchId(currentMatch.id);
 		res.send(currentMatch);
 	});
 
@@ -90,9 +91,16 @@ const main = async () => {
 			>,
 			res
 		) => {
-			tfApi.declareWinner(arena.loadedMatch, req.body.who, req.body.how);
-      arena.setWinner(req.body.who, req.body.how)
-      res.send('OK')
+			console.log(req.body);
+			console.log(arena.loadedMatch);
+			if (arena.loadedMatch != '') {
+				await tfApi.declareWinner(arena.loadedMatch, req.body.who, req.body.how);
+				arena.setWinner(req.body.who, req.body.how);
+				res.send('OK');
+			}
+      else{
+			res.send('NOT OK');
+      }
 		}
 	);
 
@@ -100,6 +108,10 @@ const main = async () => {
 		switch (req.body.control) {
 			case 'start':
 				arena.start();
+				res.send(200);
+				break;
+			case 'resume':
+				arena.resume();
 				res.send(200);
 				break;
 			case 'pause':

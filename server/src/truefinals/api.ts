@@ -124,7 +124,8 @@ class TrueFinals {
 		who: 0 | 1,
 		result: 'KO' | 'TO' | 'JD' | 'TKO' | 'HLD' | 'BY' | 'DQ' | 'FF' | 'T'
 	) {
-		await this.client.POST('/v1/tournaments/{tournamentID}/games/{gameID}', {
+    console.log(gameId)
+		const { error } = await this.client.POST('/v1/tournaments/{tournamentID}/games/{gameID}', {
 			params: {
 				path: {
 					tournamentID: process.env.TF_TOURNAMENT_ID,
@@ -136,15 +137,18 @@ class TrueFinals {
 				}
 			},
 			body: {
-				state: 'done',
+				state: 'active',
 				slots: [
-					{ score: 1 - who, checkIn: 'checked_in' },
-					{ score: who, checkIn: 'checked_in' }
+					{ score: 1 - who, checkIn: 'not_ready' },
+					{ score: who, checkIn: 'not_ready' }
 				],
 				locationID: null,
 				resultAnnotation: result
 			}
 		});
+		if (error !== undefined) {
+			console.error(error);
+		}
 	}
 }
 

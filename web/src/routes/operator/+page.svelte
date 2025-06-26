@@ -2,7 +2,25 @@
 	import { io } from '$lib/websocketconnection';
 	import { onMount } from 'svelte';
 
-	let state = { time: 180 };
+	let state = {
+		time: 180,
+		selectedWinner: null,
+		winningMode: '',
+		serverState: {
+			robot1: {
+				name: 'Robot 1',
+				photoUrl:
+					"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E"
+			},
+			robot2: {
+				name: 'Robot 2',
+				photoUrl:
+					"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E"
+			},
+			compName: 'A Robot Comp',
+			compMatch: 'Semifinals'
+		}
+	};
 
 	const callApi = async (endpoint: string, data: any, method?: string = 'GET') => {
 		return await fetch(`http://localhost:8080${endpoint}`, {
@@ -15,7 +33,7 @@
 		});
 	};
 
-  let overwriteTime = 180
+	let overwriteTime = 180;
 
 	let players = [];
 	let games = [];
@@ -41,7 +59,10 @@
 		io.on('timer', (data) => {
 			state.time = data;
 		});
-    io.on('')
+
+		io.on('matchUpdate', (data) => {
+			state.serverState = { ...state.serverState, ...data };
+		});
 
 		await loadDatabase();
 	});
@@ -50,9 +71,13 @@
 		await callApi('/api/timer', { control: 'start' }, 'POST');
 	};
 
+	const resumeTimer = async () => {
+		await callApi('/api/timer', { control: 'resume' }, 'POST');
+	};
+
 	const pauseTimer = async () => {
 		await callApi('/api/timer', { control: 'pause' }, 'POST');
-      overwriteTime = Number(state.time.toPrecision(4));
+		overwriteTime = Number(state.time.toPrecision(4));
 	};
 
 	const restartTimer = async () => {
@@ -75,7 +100,12 @@
 		selectedGameInfo = await (
 			await callApi('/api/load_match', { matchId: selectedGame.id }, 'POST')
 		).json();
-    selecedGameInfo = selectedGame
+	};
+
+	const emitWinner = async () => {
+		await callApi('/api/winner', { who: state.selectedWinner, how: state.winningMode }, "POST");
+    state.selectedWinner = null
+    state.winningMode = ''
 	};
 </script>
 
@@ -84,12 +114,59 @@
 		<div class="m-5 flex flex-col rounded bg-zinc-500 p-2">
 			<h1 class="text-center text-3xl font-bold">{state.time.toPrecision(4)}</h1>
 			<h1 class="text-center">Timer Control</h1>
-			<div class="grid grid-cols-3 gap-3">
+			<div class="grid grid-cols-4 gap-3">
 				<button class="rounded bg-zinc-800 p-2 text-white" onclick={startTimer}>Start</button>
+				<button class="rounded bg-zinc-800 p-2 text-white" onclick={resumeTimer}>Resume</button>
 				<button class="rounded bg-zinc-800 p-2 text-white" onclick={pauseTimer}>Pause</button>
 				<button class="rounded bg-zinc-800 p-2 text-white" onclick={restartTimer}>Restart</button>
-        <input class="col-span-2 bg-zinc-900 text-white" type="number" bind:value={overwriteTime}/>
-				<button class="rounded bg-zinc-800 p-2 text-white" onclick={overwriteTimer}>set time</button>
+				<input class="col-span-3 bg-zinc-900 text-white" type="number" bind:value={overwriteTime} />
+				<button class="rounded bg-zinc-800 p-2 text-white" onclick={overwriteTimer}>set time</button
+				>
+			</div>
+			<br />
+			<hr />
+			<br />
+
+			<div>
+				<h1 class="text-4xl font-semibold text-center">Declare Winner</h1>
+				<div class="grid grid-cols-4 gap-1 text-center">
+					<div
+						class="col-span-2 p-2 {state.selectedWinner == 0
+							? 'bg-green-300 text-black'
+							: 'bg-slate-800 text-white'}"
+						onclick={() => {
+							state.selectedWinner = 0;
+						}}
+					>
+						{state.serverState.robot1.name}
+					</div>
+
+					<div
+						class="col-span-2 p-2 {state.selectedWinner == 1
+							? 'bg-green-300 text-black'
+							: 'bg-slate-800 text-white'}"
+						onclick={() => {
+							state.selectedWinner = 1;
+						}}
+					>
+						{state.serverState.robot2.name}
+					</div>
+					{#each ['KO', 'TO', 'JD', 'TKO'] as wintype}
+						<div
+							class="p-2 {state.winningMode == wintype
+								? 'bg-green-300 text-black'
+								: 'bg-slate-800 text-white'}"
+							onclick={() => {
+								state.winningMode = wintype;
+							}}
+						>
+							{wintype}
+						</div>
+					{/each}
+          <button class="col-span-4 bg-slate-900 text-white p-2 font-bold text-xl" onclick={emitWinner}>
+            PUBLISH WINNER
+          </button>
+				</div>
 			</div>
 		</div>
 	</div>

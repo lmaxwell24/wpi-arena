@@ -5,12 +5,14 @@ class Timer {
 	precount: number;
 	precountDuration: number;
 
+	precounting: boolean = false;
 	running: boolean = false;
 	finished: boolean = false;
 
 	startHandlers: ((currentTime: number) => void)[] = [];
 	updateHandlers: ((currentTime: number) => void)[] = [];
 	pauseHandlers: ((currentTime: number) => void)[] = [];
+	precountHandlers: ((currentTime: number) => void)[] = [];
 	endHandlers: (() => void)[] = [];
 
 	timerInterval: number = 100; // ms
@@ -37,11 +39,24 @@ class Timer {
 	start() {
 		this.running = true;
 	}
+	onPrecount(fn: (currentTime: number) => void) {
+		this.precountHandlers.push(fn);
+	}
+	onEnd(fn: () => void) {
+		this.endHandlers.push(fn);
+	}
+	startWithPrecount() {
+		this.running = true;
+		this.precounting = true;
+		this.startHandlers.forEach((h) => h(this.time));
+	}
 
 	restart() {
 		this.running = false;
 		this.finished = false;
+		this.precounting = false;
 		this.time = this.startTime;
+		this.precount = this.precountDuration;
 		this.updateHandlers.forEach((h) => h(this.time));
 	}
 
@@ -56,15 +71,23 @@ class Timer {
 	startThread() {
 		setInterval(() => {
 			if (this.running) {
-				this.time -= this.timerInterval / 1000;
+				if (this.precounting) {
+					this.precount -= this.timerInterval / 1000;
+					if (this.precount <= 0) {
+						this.precounting = false;
+					}
+					this.precountHandlers.forEach((h) => h(this.precount));
+				} else {
+					this.time -= this.timerInterval / 1000;
 
-				if (this.time < 0) {
-					this.running = false;
-					this.finished = true;
-					this.time = 0;
-					this.endHandlers.forEach((h) => h());
+					if (this.time < 0) {
+						this.running = false;
+						this.finished = true;
+						this.time = 0;
+						this.endHandlers.forEach((h) => h());
+					}
+					this.updateHandlers.forEach((h) => h(this.time));
 				}
-				this.updateHandlers.forEach((h) => h(this.time));
 			}
 		}, this.timerInterval);
 	}
