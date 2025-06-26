@@ -1,6 +1,5 @@
 import ioClient from 'socket.io-client';
-const ENDPOINT = 'http://localhost:8080';
 
-const socket = ioClient(ENDPOINT);
+const socket = ioClient("http://localhost:8080");
 
 export const io = socket;

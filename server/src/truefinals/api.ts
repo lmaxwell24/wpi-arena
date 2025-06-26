@@ -53,6 +53,27 @@ class TrueFinals {
 			return error;
 		}
 	}
+
+	async getMatchInfo(gameID: string) {
+		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games/{gameID}', {
+			params: {
+				path: {
+					tournamentID: process.env.TF_TOURNAMENT_ID,
+					gameID
+				},
+				header: {
+					'x-api-key': this.apiKey,
+					'x-api-user-id': this.userId
+				}
+			}
+		});
+
+		if (data !== undefined) {
+			return data;
+		} else {
+			return error;
+		}
+	}
 }
 
 export { TrueFinals };

@@ -6,6 +6,7 @@ declare global {
 			TF_TOURNAMENT_ID: string;
 			TOURNAMENT_NAME: string;
 			PORT: string;
+			IP: string;
 			MATCH_TIME: string;
 		}
 	}
