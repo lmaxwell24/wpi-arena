@@ -10,7 +10,9 @@ class ArenaSocket {
 	matchState: MatchState;
 
 	loadedMatch: string = '';
+  matchPeriod: string = "end"
 
+  
 	constructor(server: httpServer) {
 		this.io = new Server(server, {
 			cors: {
@@ -31,12 +33,19 @@ class ArenaSocket {
 		this.io.on('connection', (socket) => {
 			this.sendState(socket);
 			this.timer.onPause(() => {
+        this.matchPeriod = "pause"
 				socket.emit('state', 'pause');
 			});
+      this.timer.onResume(() => {
+        this.matchPeriod = "start"
+				socket.emit('state', 'start');
+      })
 			this.timer.onStart(() => {
+        this.matchPeriod = "start"
 				socket.emit('state', 'start');
 			});
 			this.timer.onEnd(() => {
+        this.matchPeriod = "end"
 				socket.emit('state', 'end');
 			});
 			this.timer.onUpdate((time) => {
@@ -49,7 +58,9 @@ class ArenaSocket {
 	}
 	sendState(socket: Socket) {
 		socket.emit('timer', this.timer.time);
+		socket.emit('precount', this.timer.precount);
 		socket.emit('matchUpdate', this.matchState);
+		socket.emit('state', this.matchPeriod);
 	}
 
 	start() {

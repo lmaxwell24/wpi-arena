@@ -103,9 +103,9 @@
 	};
 
 	const emitWinner = async () => {
-		await callApi('/api/winner', { who: state.selectedWinner, how: state.winningMode }, "POST");
-    state.selectedWinner = null
-    state.winningMode = ''
+		await callApi('/api/winner', { who: state.selectedWinner, how: state.winningMode }, 'POST');
+		state.selectedWinner = null;
+		state.winningMode = '';
 	};
 </script>
 
@@ -128,7 +128,7 @@
 			<br />
 
 			<div>
-				<h1 class="text-4xl font-semibold text-center">Declare Winner</h1>
+				<h1 class="text-center text-4xl font-semibold">Declare Winner</h1>
 				<div class="grid grid-cols-4 gap-1 text-center">
 					<div
 						class="col-span-2 p-2 {state.selectedWinner == 0
@@ -163,9 +163,12 @@
 							{wintype}
 						</div>
 					{/each}
-          <button class="col-span-4 bg-slate-900 text-white p-2 font-bold text-xl" onclick={emitWinner}>
-            PUBLISH WINNER
-          </button>
+					<button
+						class="col-span-4 bg-slate-900 p-2 text-xl font-bold text-white"
+						onclick={emitWinner}
+					>
+						PUBLISH WINNER
+					</button>
 				</div>
 			</div>
 		</div>
