@@ -1,6 +1,10 @@
 class Timer {
 	time: number; // seconds
 	startTime: number; // seconds
+
+	precount: number;
+	precountDuration: number;
+
 	running: boolean = false;
 	finished: boolean = false;
 
@@ -14,6 +18,9 @@ class Timer {
 	constructor(totalTime?: number) {
 		this.startTime = totalTime ?? 180;
 		this.time = this.startTime;
+
+		this.precountDuration = 5; // seconds
+		this.precount = this.precountDuration;
 	}
 
 	onPause(fn: (currentTime: number) => void) {
@@ -35,6 +42,11 @@ class Timer {
 		this.running = false;
 		this.finished = false;
 		this.time = this.startTime;
+		this.updateHandlers.forEach((h) => h(this.time));
+	}
+
+	setTime(target: number) {
+		this.time = target;
 		this.updateHandlers.forEach((h) => h(this.time));
 	}
 

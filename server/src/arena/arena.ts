@@ -9,6 +9,8 @@ class ArenaSocket {
 	timer: Timer;
 	matchState: MatchState;
 
+	loadedMatch: string = '';
+
 	constructor(server: httpServer) {
 		this.io = new Server(server, {
 			cors: {
@@ -46,6 +48,17 @@ class ArenaSocket {
 	}
 	restart() {
 		this.timer.restart();
+	}
+	setTime(target: number) {
+		this.timer.setTime(target);
+	}
+
+	setWinner(who: 0 | 1, method: string) {
+		this.io.emit('winner', { player: who, method });
+	}
+
+	setMatchId(id: string) {
+		this.loadedMatch = id;
 	}
 
 	setMatch(robot1?: Robot, robot2?: Robot, compMatch?: string) {

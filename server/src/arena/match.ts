@@ -1,6 +1,6 @@
 type Robot = {
 	name: string;
-	imageUrl?: string;
+	photoUrl?: string;
 };
 
 type MatchState = {

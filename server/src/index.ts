@@ -1,4 +1,4 @@
-import { TrueFinals } from './truefinals/api.ts';
+import { TrueFinals, isApiError } from './truefinals/api.ts';
 import { ArenaSocket } from './arena/arena.ts';
 import express, { Request } from 'express';
 import { createServer } from 'node:http';
@@ -11,7 +11,7 @@ config();
 
 const port = process.env.PORT || 3000;
 
-console.log('hello world');
+console.log('Starting Server');
 
 const main = async () => {
 	const api_user = process.env.TF_API_USER;
@@ -28,26 +28,73 @@ const main = async () => {
 	app.use(express.json()); // for parsing application/json
 	app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-	app.get('/api/tourney', async (req, res) => {
+	app.get('/api/tourney', async (_req, res) => {
 		res.send(await tfApi.getTourney());
 	});
 
-	app.get('/api/players', async (req, res) => {
+	app.get('/api/players', async (_req, res) => {
 		res.send(await tfApi.getPlayers());
+	});
+
+	app.get('/api/games', async (_req, res) => {
+		res.send(await tfApi.getGames());
+	});
+
+	app.get('/api/game_info', async (_req, res) => {
+		res.send(arena.matchState);
 	});
 
 	app.post(
 		'/api/raw_match',
 		(req: Request<{}, {}, { robot1?: Robot; robot2?: Robot; compMatch?: string }>, res) => {
-			console.log(req.body);
 			arena.setMatch(req.body.robot1, req.body.robot2, req.body.compMatch);
 			res.send('OK');
 		}
 	);
 
 	app.post('/api/load_match', async (req: Request<{}, {}, { matchId: string }>, res) => {
-		res.send(await tfApi.getMatchInfo(req.body.matchId));
+		let currentMatch = await tfApi.getMatchInfo(req.body.matchId);
+		if (isApiError(currentMatch)) {
+			res.send('400');
+			return;
+		}
+		let player1 = await tfApi.getPlayer(currentMatch.slots[0].playerID as string);
+		if (isApiError(player1)) {
+			res.send('400');
+			return;
+		}
+		let player2 = await tfApi.getPlayer(currentMatch.slots[1].playerID as string);
+		if (isApiError(player2)) {
+			res.send('400');
+			return;
+		}
+
+		arena.setMatch(
+			{ ...player1, photoUrl: player1.photoUrl as string | undefined },
+			{ ...player2, photoUrl: player2.photoUrl as string | undefined },
+			currentMatch.name
+		);
+		res.send(currentMatch);
 	});
+
+	app.post(
+		'/api/winner',
+		async (
+			req: Request<
+				{},
+				{},
+				{
+					who: 0 | 1;
+					how: 'KO' | 'TO' | 'JD' | 'TKO' | 'HLD' | 'BY' | 'DQ' | 'FF' | 'T';
+				}
+			>,
+			res
+		) => {
+			tfApi.declareWinner(arena.loadedMatch, req.body.who, req.body.how);
+      arena.setWinner(req.body.who, req.body.how)
+      res.send('OK')
+		}
+	);
 
 	app.post('/api/timer', (req, res) => {
 		switch (req.body.control) {
@@ -61,6 +108,10 @@ const main = async () => {
 				break;
 			case 'restart':
 				arena.restart();
+				res.send(200);
+				break;
+			case 'set':
+				arena.setTime(req.body.time);
 				res.send(200);
 				break;
 			default:

@@ -54,6 +54,26 @@ class TrueFinals {
 		}
 	}
 
+	async getGames() {
+		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games', {
+			params: {
+				path: {
+					tournamentID: process.env.TF_TOURNAMENT_ID
+				},
+				header: {
+					'x-api-key': this.apiKey,
+					'x-api-user-id': this.userId
+				}
+			}
+		});
+
+		if (data !== undefined) {
+			return data;
+		} else {
+			return error;
+		}
+	}
+
 	async getMatchInfo(gameID: string) {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games/{gameID}', {
 			params: {
@@ -74,6 +94,73 @@ class TrueFinals {
 			return error;
 		}
 	}
+
+	async getPlayer(playerID: string) {
+		const { data, error } = await this.client.GET(
+			'/v1/tournaments/{tournamentID}/players/{playerID}',
+			{
+				params: {
+					path: {
+						tournamentID: process.env.TF_TOURNAMENT_ID,
+						playerID
+					},
+					header: {
+						'x-api-key': this.apiKey,
+						'x-api-user-id': this.userId
+					}
+				}
+			}
+		);
+
+		if (data !== undefined) {
+			return data;
+		} else {
+			return error;
+		}
+	}
+
+	async declareWinner(
+		gameId: string,
+		who: 0 | 1,
+		result: 'KO' | 'TO' | 'JD' | 'TKO' | 'HLD' | 'BY' | 'DQ' | 'FF' | 'T'
+	) {
+		await this.client.POST('/v1/tournaments/{tournamentID}/games/{gameID}', {
+			params: {
+				path: {
+					tournamentID: process.env.TF_TOURNAMENT_ID,
+					gameID: gameId
+				},
+				header: {
+					'x-api-key': this.apiKey,
+					'x-api-user-id': this.userId
+				}
+			},
+			body: {
+				state: 'done',
+				slots: [
+					{ score: 1 - who, checkIn: 'checked_in' },
+					{ score: who, checkIn: 'checked_in' }
+				],
+				locationID: null,
+				resultAnnotation: result
+			}
+		});
+	}
 }
 
-export { TrueFinals };
+interface apiError {
+	message: string;
+	code: string;
+	issues?: {
+		message: string;
+	}[];
+}
+
+function isApiError(response: any | apiError): response is apiError {
+	if ((response as apiError).issues) {
+		return true;
+	}
+	return false;
+}
+
+export { TrueFinals, isApiError };
