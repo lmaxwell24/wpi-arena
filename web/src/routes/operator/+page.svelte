@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { io } from '$lib/websocketconnection';
+	import { timeRelative } from '$lib';
 	import { onMount } from 'svelte';
+	import Ref from '../../comonents/Ref.svelte';
 
 	let state = {
 		time: 180,
+		precount: 5,
 		selectedWinner: null,
 		winningMode: '',
 		serverState: {
@@ -60,6 +63,10 @@
 			state.time = data;
 		});
 
+		io.on('precount', (data) => {
+			state.precount = Math.ceil(data);
+		});
+
 		io.on('matchUpdate', (data) => {
 			state.serverState = { ...state.serverState, ...data };
 		});
@@ -111,67 +118,21 @@
 
 <div class="absolute top-0 left-0 grid w-full grid-cols-2">
 	<div>
-		<div class="m-5 flex flex-col rounded bg-zinc-500 p-2">
-			<h1 class="text-center text-3xl font-bold">{state.time.toPrecision(4)}</h1>
-			<h1 class="text-center">Timer Control</h1>
-			<div class="grid grid-cols-4 gap-3">
-				<button class="rounded bg-zinc-800 p-2 text-white" onclick={startTimer}>Start</button>
-				<button class="rounded bg-zinc-800 p-2 text-white" onclick={resumeTimer}>Resume</button>
-				<button class="rounded bg-zinc-800 p-2 text-white" onclick={pauseTimer}>Pause</button>
-				<button class="rounded bg-zinc-800 p-2 text-white" onclick={restartTimer}>Restart</button>
-				<input class="col-span-3 bg-zinc-900 text-white" type="number" bind:value={overwriteTime} />
-				<button class="rounded bg-zinc-800 p-2 text-white" onclick={overwriteTimer}>set time</button
-				>
-			</div>
-			<br />
-			<hr />
-			<br />
-
-			<div>
-				<h1 class="text-center text-4xl font-semibold">Declare Winner</h1>
-				<div class="grid grid-cols-4 gap-1 text-center">
-					<div
-						class="col-span-2 p-2 {state.selectedWinner == 0
-							? 'bg-green-300 text-black'
-							: 'bg-slate-800 text-white'}"
-						onclick={() => {
-							state.selectedWinner = 0;
-						}}
-					>
-						{state.serverState.robot1.name}
-					</div>
-
-					<div
-						class="col-span-2 p-2 {state.selectedWinner == 1
-							? 'bg-green-300 text-black'
-							: 'bg-slate-800 text-white'}"
-						onclick={() => {
-							state.selectedWinner = 1;
-						}}
-					>
-						{state.serverState.robot2.name}
-					</div>
-					{#each ['KO', 'TO', 'JD', 'TKO'] as wintype}
-						<div
-							class="p-2 {state.winningMode == wintype
-								? 'bg-green-300 text-black'
-								: 'bg-slate-800 text-white'}"
-							onclick={() => {
-								state.winningMode = wintype;
-							}}
-						>
-							{wintype}
-						</div>
-					{/each}
-					<button
-						class="col-span-4 bg-slate-900 p-2 text-xl font-bold text-white"
-						onclick={emitWinner}
-					>
-						PUBLISH WINNER
-					</button>
-				</div>
-			</div>
-		</div>
+		<Ref
+			{startTimer}
+			{resumeTimer}
+			{pauseTimer}
+			{overwriteTimer}
+			{restartTimer}
+			{overwriteTime}
+			time={state.time.toPrecision(4)}
+			precount={state.precount}
+			bind:selectedWinner={state.selectedWinner}
+			robot1Name={state.serverState.robot1.name}
+			robot2Name={state.serverState.robot2.name}
+			bind:winningMode={state.winningMode}
+			{emitWinner}
+		/>
 	</div>
 	<div>
 		<div class="m-5 flex flex-col gap-3 rounded bg-zinc-500 p-2">
@@ -202,6 +163,9 @@
 							{game.name}: {getPlayerById(game.slots[0].playerID).name} vs {getPlayerById(
 								game.slots[1].playerID
 							).name}
+							{#if game.availableSince}
+								(Available since {timeRelative(Date.now(), game.availableSince)})
+							{/if}
 						</option>
 					{/each}
 				</select>

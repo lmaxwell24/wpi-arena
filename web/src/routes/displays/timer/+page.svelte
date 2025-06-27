@@ -9,6 +9,10 @@
 			console.log(data);
 			time = data;
 		});
+		io.on('precount', (data) => {
+			console.log(data);
+			time = data;
+		});
 	});
 </script>
 
