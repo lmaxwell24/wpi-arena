@@ -158,6 +158,10 @@ For competitions, set up multiple displays:
 - `POST /api/winner` - Declare match winner
 - `POST /api/tap_out` - Robot tap out
 
+### Audiance Display Control
+- `POST /api/audience_overlay` - Toggle visibility of the score timer
+- `POST /api/lower_third` - Control visibility, title, and subtitle of lower third
+
 ### Timer Control
 - `POST /api/timer` - Control timer (start/pause/resume/restart/set)
 
@@ -165,6 +169,7 @@ For competitions, set up multiple displays:
 - `GET /api/tourney` - Get tournament information
 - `GET /api/players` - Get all players/robots
 - `GET /api/games` - Get all tournament matches
+
 
 ## 🛠️ Development
 
