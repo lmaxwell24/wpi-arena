@@ -2,6 +2,7 @@
 	import { io } from '$lib/websocketconnection';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import { Howl, Howler } from 'howler';
 
 	let time = 180;
 	let precount = 5;
@@ -26,6 +27,27 @@
 	let winnerStatus: 0 | 1 | null = null;
 	let winnerMethod = '';
 
+	// initialize sound files for match events
+	const matchSound = new Howl({
+		src: ['/sounds/match-start.mp3'],
+		volume: 0.5,
+		onplay: () => {
+			Howler.stop();
+		}
+	});
+	const winnerSound = new Howl({
+		src: ['/sounds/winner.mp3'],
+		volume: 0.5
+	});
+	const tapoutSound = new Howl({
+		src: ['/sounds/tapout.mp3'],
+		volume: 0.5
+	});
+	const koSound = new Howl({
+		src: ['/sounds/ko.mp3'],
+		volume: 0.5
+	});
+
 	onMount(() => {
 		io.on('timer', (data) => {
 			time = Math.ceil(data);
@@ -44,6 +66,11 @@
 		io.on('state', (newState) => {
 			matchPeriod = newState;
 			winnerStatus = null;
+
+			// play sounds on state changes
+			if (newState === 'start') {
+				matchSound.play();
+			}
 		});
 
 		io.on('winner', (data) => {
@@ -51,15 +78,20 @@
 			matchPeriod = 'winner';
 			winnerMethod = method;
 			winnerStatus = player;
+			// play sound depending on winner method
+			if (method === 'KO') {
+				koSound.play();
+			} else if (method === 'TO') {
+				tapoutSound.play();
+			}
 		});
 
-		if (window.obsstudio) {
-			// make body transparent if OBS is detected
-			document.body.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-			document.body.style.background = 'rgba(0, 0, 0, 0)';
-			document.body.style.margin = '0';
-			document.body.style.overflow = 'hidden';
-		}
+    if(window.obsstudio) { // make body transparent if OBS is detected
+      document.body.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+      document.body.style.background = 'rgba(0, 0, 0, 0)';
+      document.body.style.margin = '0';
+      document.body.style.overflow = 'hidden';
+    }
 	});
 </script>
 
