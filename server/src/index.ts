@@ -93,12 +93,12 @@ const main = async () => {
 		) => {
 			console.log(req.body);
 			console.log(arena.loadedMatch);
+			arena.setWinner(req.body.who, req.body.how);
 			if (arena.loadedMatch != '') {
 				await tfApi.declareWinner(arena.loadedMatch, req.body.who, req.body.how);
-				arena.setWinner(req.body.who, req.body.how);
-				res.send('OK');
+				res.status(200).send('OK');
 			} else {
-				res.send('NOT OK');
+				res.status(200).send('No loaded match');
 			}
 		}
 	);

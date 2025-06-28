@@ -88,7 +88,7 @@ class ArenaSocket {
 
 	setMatch(robot1?: Robot, robot2?: Robot, compMatch?: string) {
 		this.loadedMatch = '';
-    this.restart()
+		this.restart();
 		this.matchState = {
 			...this.matchState,
 			robot1: { ...this.matchState.robot1, ...robot1 },
