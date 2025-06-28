@@ -114,11 +114,11 @@ const main = async () => {
 	);
 
 	app.post('/api/tap_out', async (req: Request<{}, {}, { robotId: 0 | 1 }>, res) => {
-    let whoWon: 0 | 1 = req.body.robotId == 1 ? 0 : 1
+		let whoWon: 0 | 1 = req.body.robotId == 1 ? 0 : 1;
 		arena.setWinner(whoWon, 'TO');
-			if (arena.loadedMatch != '') {
-				await tfApi.declareWinner(arena.loadedMatch, whoWon, 'TO');
-			}
+		if (arena.loadedMatch != '') {
+			await tfApi.declareWinner(arena.loadedMatch, whoWon, 'TO');
+		}
 		res.status(200).send('OK');
 	});
 
@@ -148,6 +148,28 @@ const main = async () => {
 				res.send(400);
 		}
 	});
+
+	// Audience display control endpoints
+	app.post('/api/audience_overlay', (req: Request<{}, {}, { visible: boolean }>, res) => {
+		arena.setAudienceOverlayVisible(req.body.visible);
+		res.status(200).send('OK');
+	});
+
+	app.post(
+		'/api/lower_third',
+		(req: Request<{}, {}, { visible: boolean; title?: string; subtitle?: string }>, res) => {
+			arena.setLowerThird(req.body.visible, req.body.title, req.body.subtitle);
+			res.status(200).send('OK');
+		}
+	);
+
+	app.post(
+		'/api/display_state',
+		(req: Request<{}, {}, { state: 'preload' | 'start' | 'pause' | 'end' | 'winner' }>, res) => {
+			arena.setDisplayState(req.body.state);
+			res.status(200).send('OK');
+		}
+	);
 
 	app.use(handler);
 	server.listen(port, () => {

@@ -11,6 +11,16 @@ class ArenaSocket {
 
 	loadedMatch: string = '';
 	matchPeriod: string = 'end';
+	audienceOverlayVisible: boolean = true;
+	lowerThird: {
+		visible: boolean;
+		title: string;
+		subtitle: string;
+	} = {
+		visible: false,
+		title: '',
+		subtitle: ''
+	};
 
 	constructor(server: httpServer) {
 		this.io = new Server(server, {
@@ -58,13 +68,13 @@ class ArenaSocket {
 	sendState(socket: Socket) {
 		socket.emit('timer', this.timer.time);
 		socket.emit('precount', this.timer.precount);
-    if(this.timer.running){
-		socket.emit('matchUpdate', this.matchState);
-		socket.emit('state', this.matchPeriod);
-    }else{
-		socket.emit('state', this.matchPeriod);
-		socket.emit('matchUpdate', this.matchState);
-    }
+		if (this.timer.running) {
+			socket.emit('matchUpdate', this.matchState);
+			socket.emit('state', this.matchPeriod);
+		} else {
+			socket.emit('state', this.matchPeriod);
+			socket.emit('matchUpdate', this.matchState);
+		}
 		socket.emit('robotReady', { robotId: 0, ready: this.matchState.robot1.ready });
 		socket.emit('robotReady', { robotId: 1, ready: this.matchState.robot2.ready });
 	}
@@ -119,6 +129,26 @@ class ArenaSocket {
 		this.io.emit('matchUpdate', { robot1, robot2, compMatch });
 		this.io.emit('robotReady', { robotId: 0, ready: false });
 		this.io.emit('robotReady', { robotId: 1, ready: false });
+	}
+
+	// Audience display controls
+	setAudienceOverlayVisible(visible: boolean) {
+		this.audienceOverlayVisible = visible;
+		this.io.emit('audienceOverlay', { visible });
+	}
+
+	setLowerThird(visible: boolean, title?: string, subtitle?: string) {
+		this.lowerThird = {
+			visible,
+			title: title || this.lowerThird.title,
+			subtitle: subtitle || this.lowerThird.subtitle
+		};
+		this.io.emit('lowerThird', this.lowerThird);
+	}
+
+	setDisplayState(state: 'preload' | 'start' | 'pause' | 'end' | 'winner') {
+		this.matchPeriod = state;
+		this.io.emit('state', state);
 	}
 }
 
