@@ -58,8 +58,13 @@ class ArenaSocket {
 	sendState(socket: Socket) {
 		socket.emit('timer', this.timer.time);
 		socket.emit('precount', this.timer.precount);
+    if(this.timer.running){
 		socket.emit('matchUpdate', this.matchState);
 		socket.emit('state', this.matchPeriod);
+    }else{
+		socket.emit('state', this.matchPeriod);
+		socket.emit('matchUpdate', this.matchState);
+    }
 		socket.emit('robotReady', { robotId: 0, ready: this.matchState.robot1.ready });
 		socket.emit('robotReady', { robotId: 1, ready: this.matchState.robot2.ready });
 	}

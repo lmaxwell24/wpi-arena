@@ -114,7 +114,11 @@ const main = async () => {
 	);
 
 	app.post('/api/tap_out', async (req: Request<{}, {}, { robotId: 0 | 1 }>, res) => {
-		arena.setWinner(req.body.robotId == 1 ? 0 : 1, 'TO');
+    let whoWon: 0 | 1 = req.body.robotId == 1 ? 0 : 1
+		arena.setWinner(whoWon, 'TO');
+			if (arena.loadedMatch != '') {
+				await tfApi.declareWinner(arena.loadedMatch, whoWon, 'TO');
+			}
 		res.status(200).send('OK');
 	});
 

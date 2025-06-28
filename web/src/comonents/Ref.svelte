@@ -99,28 +99,31 @@
 		<div>
 			<!-- Robot Selection -->
 			<div class="mb-6 grid grid-cols-2 gap-4">
-				<button
-					class="btn {ready1 ? 'bg-emerald-950' : 'btn-secondary'} "
-					onclick={() => {
-						sendReadyStatus(0, !ready1);
-					}}
-				>
-					<div class="status-indicator {ready1 ? 'status-active' : 'status-stopped'} mr-3"></div>
-					<span class="text-lg font-medium {ready1 ? 'text-emerald-400' : 'text-red-400'}">
-						{ready1 ? 'Ready' : 'Not Ready'}
-					</span>
-				</button>
-				<button
-					class="btn {ready2 ? 'bg-emerald-950' : 'btn-secondary'} "
-					onclick={() => {
-						sendReadyStatus(1, !ready2);
-					}}
-				>
-					<div class="status-indicator {ready2 ? 'status-active' : 'status-stopped'} mr-3"></div>
-					<span class="text-lg font-medium {ready2 ? 'text-emerald-400' : 'text-red-400'}">
-						{ready2 ? 'Ready' : 'Not Ready'}
-					</span>
-				</button>
+				{#if precount === 5}
+					<button
+						class="btn {ready1 ? 'bg-emerald-950' : 'btn-secondary'} "
+						onclick={() => {
+							sendReadyStatus(0, !ready1);
+						}}
+					>
+						<div class="status-indicator {ready1 ? 'status-active' : 'status-stopped'} mr-3"></div>
+						<span class="text-lg font-medium {ready1 ? 'text-emerald-400' : 'text-red-400'}">
+							{ready1 ? 'Ready' : 'Not Ready'}
+						</span>
+					</button>
+					<button
+						class="btn {ready2 ? 'bg-emerald-950' : 'btn-secondary'} "
+						onclick={() => {
+							sendReadyStatus(1, !ready2);
+						}}
+					>
+						<div class="status-indicator {ready2 ? 'status-active' : 'status-stopped'} mr-3"></div>
+						<span class="text-lg font-medium {ready2 ? 'text-emerald-400' : 'text-red-400'}">
+							{ready2 ? 'Ready' : 'Not Ready'}
+						</span>
+					</button>
+				{/if}
+
 				<button
 					class="robot-card cursor-pointer bg-gradient-to-r from-blue-500/20 to-blue-600/20 p-6 transition-all duration-200 {selectedWinner ==
 					0

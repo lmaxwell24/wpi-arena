@@ -193,11 +193,12 @@
 							<div class="text-7xl {matchPeriod === 'pause' ? 'timer-amber' : 'timer-display'}">
 								{Math.floor(time / 60)}:{(time % 60).toFixed(1).padStart(4, '0')}
 							</div>
-							<div class="text-xl font-medium text-slate-300">Match Time</div>
+
+							<span class="text-xl font-medium text-slate-300">Match Time </span>
 							<div
 								class="status-indicator {time > 0
 									? 'status-active'
-									: 'status-stopped'} mx-auto h-6 w-6"
+									: 'status-stopped'} mx-2 h-6 w-6"
 							></div>
 						{/if}
 					{/if}
@@ -269,4 +270,21 @@
 			<div class="absolute top-1/2 right-20 h-24 w-24 rounded-full border border-red-400/20"></div>
 		</div>
 	</div>
+	<!-- Confetti Effect -->
+	{#if matchPeriod === 'winner' && didWin}
+		<div
+			class="pointer-events-none fixed -top-2 z-50 flex h-screen w-screen justify-center overflow-hidden"
+			transition:fade
+		>
+			<Confetti
+				x={[-5, 5]}
+				y={[0, 0.1]}
+				delay={[500, 2000]}
+				infinite
+				duration="5000"
+				amount="500"
+				fallDistance="100vh"
+			/>
+		</div>
+	{/if}
 </div>
