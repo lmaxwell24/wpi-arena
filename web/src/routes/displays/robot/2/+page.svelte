@@ -61,6 +61,10 @@
 		}
 	};
 
+	let matchPeriod: 'pause' | 'start' | 'end' | 'winner' | 'preload' = 'preload';
+	let didWin: boolean = false;
+	let winnerMethod = '';
+
 	onMount(() => {
 		// Update robot info when match loads
 		robotInfo = {
@@ -77,6 +81,17 @@
 			precount = Math.ceil(data);
 		});
 
+		io.on('state', (newState) => {
+			matchPeriod = newState;
+		});
+
+		io.on('winner', (data) => {
+			const { player, method } = data;
+			matchPeriod = 'winner';
+			winnerMethod = method;
+			didWin = player === 1;
+		});
+
 		io.on('matchUpdate', (data) => {
 			matchState = { ...matchState, ...data };
 			// Update robot info when match updates
@@ -85,6 +100,7 @@
 				name: matchState.robot2.name,
 				photoUrl: matchState.robot2.photoUrl
 			};
+			matchPeriod = 'preload';
 		});
 
 		// Listen for ready status updates from other sources
@@ -149,27 +165,37 @@
 		<div class="card mb-8 bg-gradient-to-br from-slate-800/80 to-slate-700/80">
 			<div class="card-body py-12">
 				<div class="space-y-6">
-					{#if precount > 0}
-						<div class="timer-display text-8xl text-amber-400">
-							{precount}
+					{#if matchPeriod === 'winner'}
+						<div class="text-8xl font-bold {didWin ? 'text-emerald-400' : 'text-red-400'}">
+							{didWin ? 'VICTORY' : 'DEFEAT'}
 						</div>
-						<div class="text-2xl font-medium text-slate-300">Starting in...</div>
-						<div class="status-indicator status-paused mx-auto h-6 w-6"></div>
-					{:else}
-						<div class="timer-display text-7xl">
-							{Math.floor(time / 60)}:{(time % 60).toFixed(1).padStart(4, '0')}
+						<div class="text-2xl font-medium text-slate-300">
+							{winnerMethod}
 						</div>
-						<div class="text-xl font-medium text-slate-300">Match Time</div>
-						<div
-							class="status-indicator {time > 0
-								? 'status-active'
-								: 'status-stopped'} mx-auto h-6 w-6"
-						></div>
+					{:else if matchPeriod === 'preload'}
+						<div class="text-8xl font-bold text-slate-300">{matchState.compMatch}</div>
+					{:else if matchPeriod === 'start' || matchPeriod === 'pause' || matchPeriod === 'end'}
+						{#if precount > 0}
+							<div class="timer-display text-8xl text-amber-400">
+								{precount}
+							</div>
+							<div class="text-2xl font-medium text-slate-300">Starting in...</div>
+							<div class="status-indicator status-paused mx-auto h-6 w-6"></div>
+						{:else}
+							<div class="text-7xl {matchPeriod === 'pause' ? 'timer-amber' : 'timer-display'}">
+								{Math.floor(time / 60)}:{(time % 60).toFixed(1).padStart(4, '0')}
+							</div>
+							<div class="text-xl font-medium text-slate-300">Match Time</div>
+							<div
+								class="status-indicator {time > 0
+									? 'status-active'
+									: 'status-stopped'} mx-auto h-6 w-6"
+							></div>
+						{/if}
 					{/if}
 				</div>
 			</div>
 		</div>
-
 		<!-- Ready Button -->
 		<div class="card bg-gradient-to-br from-slate-800/50 to-slate-700/50">
 			<div class="card-body py-8">

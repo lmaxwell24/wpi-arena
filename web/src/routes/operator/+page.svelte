@@ -73,6 +73,11 @@
 			state.serverState = { ...state.serverState, ...data };
 		});
 
+		io.on('robotReady', (data) => {
+			const { robotId, ready } = data;
+			state.serverState[`robot${robotId + 1}`].ready = ready;
+		});
+
 		await loadDatabase();
 	});
 

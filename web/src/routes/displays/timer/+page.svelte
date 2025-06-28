@@ -6,6 +6,8 @@
 
 	let precount = 0;
 
+	let matchPeriod: 'pause' | 'start' | 'end' | 'winner' | 'preload' = 'preload';
+
 	onMount(() => {
 		io.on('timer', (data) => {
 			console.log(data);
@@ -15,6 +17,9 @@
 			console.log(data);
 			precount = data;
 		});
+		io.on('state', (newState) => {
+			matchPeriod = newState;
+		});
 	});
 </script>
 
@@ -23,7 +28,10 @@
 >
 	<div class="text-center">
 		<!-- Main Timer Display -->
-		<div class="timer-display mb-8" style="font-size: 12rem; line-height: 1;">
+		<div
+			class="{matchPeriod === 'pause' || precount > 0 ? 'timer-amber' : 'timer-display'}  mb-8"
+			style="font-size: 12rem; line-height: 1;"
+		>
 			{#if precount > 0}
 				{Math.ceil(precount)}
 			{:else}

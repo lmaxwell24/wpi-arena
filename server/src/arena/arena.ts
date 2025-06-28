@@ -58,8 +58,8 @@ class ArenaSocket {
 	sendState(socket: Socket) {
 		socket.emit('timer', this.timer.time);
 		socket.emit('precount', this.timer.precount);
-		socket.emit('matchUpdate', this.matchState);
 		socket.emit('state', this.matchPeriod);
+		socket.emit('matchUpdate', this.matchState);
 	}
 
 	start() {

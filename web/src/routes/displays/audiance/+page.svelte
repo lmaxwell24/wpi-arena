@@ -85,7 +85,7 @@
 			>
 				<div class="text-center">
 					<img
-						class="mx-auto mb-4 h-24 w-32 rounded-lg border-2 border-blue-500/30 object-cover"
+						class="mx-auto mb-4 h-24 w-32 rounded-lg border-6 border-blue-500/30 object-cover"
 						src={matchState.robot1.photoUrl}
 						alt="Robot 1"
 					/>
@@ -147,7 +147,7 @@
 			>
 				<div class="text-center">
 					<img
-						class="mx-auto mb-4 h-24 w-32 rounded-lg border-2 border-red-500/30 object-cover"
+						class="mx-auto mb-4 h-24 w-32 rounded-lg border-6 border-red-500/30 object-cover"
 						src={matchState.robot2.photoUrl}
 						alt="Robot 2"
 					/>
