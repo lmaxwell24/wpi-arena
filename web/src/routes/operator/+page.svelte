@@ -116,134 +116,233 @@
 	};
 </script>
 
-<div class="absolute top-0 left-0 grid w-full grid-cols-2">
-	<div>
-		<Ref
-			{startTimer}
-			{resumeTimer}
-			{pauseTimer}
-			{overwriteTimer}
-			{restartTimer}
-			{overwriteTime}
-			time={state.time.toPrecision(4)}
-			precount={state.precount}
-			bind:selectedWinner={state.selectedWinner}
-			robot1Name={state.serverState.robot1.name}
-			robot2Name={state.serverState.robot2.name}
-			bind:winningMode={state.winningMode}
-			{emitWinner}
-		/>
-	</div>
-	<div>
-		<div class="m-5 flex flex-col gap-3 rounded bg-zinc-500 p-2">
-			<h1 class="text-center text-xl font-semibold">Match Loading</h1>
-			<div class="rounded bg-zinc-800 p-2 text-white">
-				<h2 class="text-center">Test Match</h2>
-				<select bind:value={test.player1} class="w-full border-2">
-					{#each players as player}
-						<option value={player} class="text-black">
-							{player.name}
-						</option>
-					{/each}
-				</select>
-				<select bind:value={test.player2} class="w-full border-2 bg-red-800 text-black">
-					{#each players as player}
-						<option value={player} class="bg-white text-black">
-							{player.name}
-						</option>
-					{/each}
-				</select>
-				<button onclick={loadTestMatch}>Load match</button>
+<div class="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 p-6">
+	<div class="mx-auto max-w-7xl">
+		<!-- Header -->
+		<div class="mb-8">
+			<h1 class="mb-2 text-3xl font-bold text-white">Robot Arena - Operator Panel</h1>
+			<p class="text-slate-400">Control match timing, load competitions, and manage the arena</p>
+		</div>
+
+		<div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+			<!-- Referee Controls -->
+			<div>
+				<Ref
+					{startTimer}
+					{resumeTimer}
+					{pauseTimer}
+					{overwriteTimer}
+					{restartTimer}
+					bind:overwriteTime
+					time={state.time.toPrecision(4)}
+					precount={state.precount}
+					bind:selectedWinner={state.selectedWinner}
+					robot1Name={state.serverState.robot1.name}
+					robot2Name={state.serverState.robot2.name}
+					bind:winningMode={state.winningMode}
+					{emitWinner}
+				/>
 			</div>
-			<div class="rounded bg-zinc-800 p-2 text-white">
-				<h2 class="text-center">Truefinals Match</h2>
-				<select bind:value={selectedGame} class="w-full border-2">
-					{#each games.filter((a) => a.state == 'available') as game}
-						<option value={game} class="text-black">
-							{game.name}: {getPlayerById(game.slots[0].playerID).name} vs {getPlayerById(
-								game.slots[1].playerID
-							).name}
-							{#if game.availableSince}
-								(Available since {timeRelative(Date.now(), game.availableSince)})
-							{/if}
-						</option>
-					{/each}
-				</select>
-				<button onclick={loadTFMatch}>Load match</button>
+			<!-- Match Loading -->
+			<div class="card">
+				<div class="card-header">
+					<h2 class="text-xl font-semibold text-white">Match Loading</h2>
+				</div>
+				<div class="card-body space-y-6">
+					<!-- Test Match -->
+					<div class="rounded-lg bg-slate-700/50 p-4">
+						<h3 class="mb-4 text-center text-lg font-medium text-white">Test Match</h3>
+						<div class="space-y-3">
+							<div>
+								<label class="mb-1 block text-sm font-medium text-slate-300">Robot 1</label>
+								<select bind:value={test.player1} class="select w-full">
+									{#each players as player}
+										<option value={player}>
+											{player.name}
+										</option>
+									{/each}
+								</select>
+							</div>
+							<div>
+								<label class="mb-1 block text-sm font-medium text-slate-300">Robot 2</label>
+								<select bind:value={test.player2} class="select w-full">
+									{#each players as player}
+										<option value={player}>
+											{player.name}
+										</option>
+									{/each}
+								</select>
+							</div>
+							<button class="btn btn-primary w-full" onclick={loadTestMatch}>
+								Load Test Match
+							</button>
+						</div>
+					</div>
+
+					<!-- Tournament Match -->
+					<div class="rounded-lg bg-slate-700/50 p-4">
+						<h3 class="mb-4 text-center text-lg font-medium text-white">Tournament Match</h3>
+						<div class="space-y-3">
+							<div>
+								<label class="mb-1 block text-sm font-medium text-slate-300"
+									>Available Matches</label
+								>
+								<select bind:value={selectedGame} class="select w-full">
+									{#each games.filter((a) => a.state == 'available') as game}
+										<option value={game}>
+											{game.name}: {getPlayerById(game.slots[0].playerID).name} vs {getPlayerById(
+												game.slots[1].playerID
+											).name}
+											{#if game.availableSince}
+												(Available since {timeRelative(Date.now(), game.availableSince)})
+											{/if}
+										</option>
+									{/each}
+								</select>
+							</div>
+							<button class="btn btn-success w-full" onclick={loadTFMatch}>
+								Load Tournament Match
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Info Panels -->
+		<div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+			<!-- Preview Info -->
+			<div class="card from-combat-black/40 to-combat-red/40 bg-gradient-to-br">
+				<div class="card-header">
+					<h3 class="text-lg font-semibold text-white">Match Preview</h3>
+				</div>
+				<div class="card-body">
+					<div class="grid grid-cols-2 gap-4 text-sm">
+						<div class="space-y-3">
+							<div>
+								<span class="text-slate-400">Game ID</span>
+								<p class="font-medium text-white">{selectedGame.game || 'N/A'}</p>
+							</div>
+							<div>
+								<span class="text-slate-400">Bracket ID</span>
+								<p class="font-medium text-white">{selectedGame.bracketID || 'N/A'}</p>
+							</div>
+							<div>
+								<span class="text-slate-400">Game Name</span>
+								<p class="font-medium text-white">{selectedGame.name || 'N/A'}</p>
+							</div>
+						</div>
+						<div class="space-y-3">
+							<div>
+								<span class="text-slate-400">Robot 1</span>
+								<p class="font-medium text-white">
+									{typeof selectedGame.slots !== 'undefined'
+										? getPlayerById(selectedGame.slots[0].playerID).name
+										: 'N/A'}
+								</p>
+							</div>
+							<div>
+								<span class="text-slate-400">Robot 2</span>
+								<p class="font-medium text-white">
+									{typeof selectedGame.slots !== 'undefined'
+										? getPlayerById(selectedGame.slots[1].playerID).name
+										: 'N/A'}
+								</p>
+							</div>
+							<div>
+								<span class="text-slate-400">State</span>
+								<p class="font-medium text-white">
+									<span
+										class="inline-flex rounded-full px-2 py-1 text-xs font-semibold {selectedGame.state ===
+										'available'
+											? 'bg-green-100 text-green-800'
+											: 'bg-gray-100 text-gray-800'}"
+									>
+										{selectedGame.state || 'N/A'}
+									</span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- Current Info -->
+			<div class="card from-combat-black/40 to-combat-red/40 bg-gradient-to-br">
+				<div class="card-header">
+					<h3 class="text-lg font-semibold text-white">Current Match Info</h3>
+				</div>
+				<div class="card-body">
+					<div class="grid grid-cols-2 gap-4 text-sm">
+						<div class="space-y-3">
+							<div>
+								<span class="text-slate-400">Game ID</span>
+								<p class="font-medium text-white">{selectedGameInfo.game || 'N/A'}</p>
+							</div>
+							<div>
+								<span class="text-slate-400">Bracket ID</span>
+								<p class="font-medium text-white">{selectedGameInfo.bracketID || 'N/A'}</p>
+							</div>
+							<div>
+								<span class="text-slate-400">Game Name</span>
+								<p class="font-medium text-white">{selectedGameInfo.name || 'N/A'}</p>
+							</div>
+						</div>
+						<div class="space-y-3">
+							<div>
+								<span class="text-slate-400">Robot 1</span>
+								<p class="font-medium text-white">
+									{typeof selectedGameInfo.slots !== 'undefined'
+										? getPlayerById(selectedGameInfo.slots[0].playerID).name
+										: 'N/A'}
+								</p>
+							</div>
+							<div>
+								<span class="text-slate-400">Robot 2</span>
+								<p class="font-medium text-white">
+									{typeof selectedGameInfo.slots !== 'undefined'
+										? getPlayerById(selectedGameInfo.slots[1].playerID).name
+										: 'N/A'}
+								</p>
+							</div>
+							<div>
+								<span class="text-slate-400">State</span>
+								<p class="font-medium text-white">
+									<span
+										class="inline-flex rounded-full px-2 py-1 text-xs font-semibold {selectedGameInfo ===
+										'available'
+											? 'bg-green-100 text-green-800'
+											: 'bg-gray-100 text-gray-800'}"
+									>
+										{selectedGameInfo.state || 'N/A'}
+									</span>
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<br />
+		<hr />
+		<!-- Database Control -->
+		<div class="card mt-6">
+			<div class="card-body flex flex-col items-center justify-center text-center">
+				<button
+					class="btn btn-secondary flex items-center justify-center px-8 py-3 text-lg font-bold"
+					onclick={loadDatabase}
+				>
+					<svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+						></path>
+					</svg>
+					RELOAD DATABASE
+				</button>
 			</div>
 		</div>
 	</div>
-	<div>
-		<div class="m-5 flex flex-col gap-3 rounded bg-zinc-500 p-2">
-			<h1>Preview Info</h1>
-			<div class="grid grid-cols-2 text-white">
-				<p>Game ID</p>
-				<p>{selectedGame.game}</p>
-				<p>Bracket ID</p>
-				<p>{selectedGame.bracketID}</p>
-				<p>Game Name</p>
-				<p>{selectedGame.name}</p>
-				<p>Next Game Slots</p>
-				<p>
-					{typeof selectedGame.nextGameSlotIDs !== 'undefined' &&
-					selectedGame.nextGameSlotIDs !== null
-						? selectedGame.nextGameSlotIDs.join(', ')
-						: ''}
-				</p>
-				<p>Robot 1</p>
-				<p>
-					{typeof selectedGame.slots !== 'undefined'
-						? getPlayerById(selectedGame.slots[0].playerID).name
-						: ''}
-				</p>
-				<p>Robot 2</p>
-				<p>
-					{typeof selectedGame.slots !== 'undefined'
-						? getPlayerById(selectedGame.slots[1].playerID).name
-						: ''}
-				</p>
-				<p>State</p>
-				<p>{selectedGame.state}</p>
-			</div>
-		</div>
-	</div>
-	<div>
-		<div class="m-5 flex flex-col gap-3 rounded bg-zinc-500 p-2">
-			<h1>Current Info</h1>
-			<div class="grid grid-cols-2 text-white">
-				<p>Game ID</p>
-				<p>{selectedGameInfo.game}</p>
-				<p>Bracket ID</p>
-				<p>{selectedGameInfo.bracketID}</p>
-				<p>Game Name</p>
-				<p>{selectedGameInfo.name}</p>
-				<p>Next Game Slots</p>
-				<p>
-					{typeof selectedGameInfo.nextGameSlotIDs !== 'undefined' &&
-					selectedGameInfo.nextGameSlotIDs !== null
-						? selectedGameInfo.nextGameSlotIDs.join(', ')
-						: ''}
-				</p>
-				<p>Robot 1</p>
-				<p>
-					{typeof selectedGameInfo.slots !== 'undefined'
-						? getPlayerById(selectedGameInfo.slots[0].playerID).name
-						: ''}
-				</p>
-				<p>Robot 2</p>
-				<p>
-					{typeof selectedGameInfo.slots !== 'undefined'
-						? getPlayerById(selectedGameInfo.slots[1].playerID).name
-						: ''}
-				</p>
-				<p>State</p>
-				<p>{selectedGameInfo.state}</p>
-			</div>
-		</div>
-	</div>
-</div>
-<div
-	class="absolute bottom-0 flex w-full items-center justify-center bg-zinc-800 p-5 text-center text-4xl font-bold text-white"
->
-	<button class="text-center" onclick={loadDatabase}> RELOAD DATABASE LOCALLY </button>
 </div>

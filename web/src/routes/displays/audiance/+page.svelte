@@ -21,7 +21,7 @@
 		compMatch: 'Semifinals'
 	};
 
-	let matchPeriod: 'pause' | 'start' | 'end' | 'winner' = 'end';
+	let matchPeriod: 'pause' | 'start' | 'end' | 'winner' | 'preload' = 'preload';
 
 	let winnerStatus: 0 | 1 | null = null;
 	let winnerMethod = '';
@@ -38,6 +38,7 @@
 			console.log(data);
 			matchState = { ...matchState, ...data };
 			console.log(matchState);
+			matchPeriod = 'preload';
 		});
 
 		io.on('state', (newState) => {
@@ -54,44 +55,126 @@
 	});
 </script>
 
-<div
-	class="font-roboto absolute top-0 left-0 mx-0 my-0 flex h-screen w-screen items-start justify-center text-3xl"
->
-	<div class="my-4 inline-block w-7xl bg-zinc-500">
-		<div class="grid grid-cols-5 text-center">
-			<div class="col-span-5 bg-white text-2xl">{matchState.compName} - {matchState.compMatch}</div>
-			<div class="col-span-5 flex">
-				<div class="flex w-full flex-2 gap-2 bg-[#131323] text-left text-white">
-					<img class="aspect-square h-20" src={matchState.robot1.photoUrl} alt="" />
-					<span class="py-1">{matchState.robot1.name.toUpperCase()}</span>
-				</div>
-				<div
-					class="flex flex-1 items-center justify-center bg-{matchPeriod == 'winner'
-						? winnerStatus == 0
-							? '[#131323] text-white'
-							: '[#af1b33] text-white'
-						: 'zinc-200 text-black'} p-2 text-5xl"
-					transition:fade
+<div class="flex min-h-screen items-start justify-center p-8">
+	<div class="w-full max-w-6xl">
+		<!-- Competition Header -->
+		<div class="card bg-combat-black/90 border-red-500/30">
+			<div class="card-body py-2 text-center">
+				<span
+					class="mb-2 bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-3xl font-bold text-transparent"
 				>
-					{#if matchPeriod != 'end'}
-						<span transition:fade>
-							{#if matchPeriod == 'winner'}
-								{winnerMethod}
-							{:else if precount != 0}
-								{precount}
-							{:else}
-								{Math.floor(time / 600)}{Math.floor(time / 60)}:{Math.floor(
-									(time % 60) / 10
-								)}{Math.floor(time % 10)}
-							{/if}
-						</span>
+					{matchState.compName}
+				</span>
+				-
+				<span
+					class="bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-3xl font-bold text-transparent"
+					>{matchState.compMatch}</span
+				>
+			</div>
+		</div>
+
+		<!-- Main Match Display -->
+		<div
+			class="from-combat-black/80 to-combat-red/80 grid grid-cols-1 items-stretch bg-gradient-to-br lg:grid-cols-3"
+		>
+			<!-- Robot 1 -->
+			<div
+				class="robot-card border-blue-500/50 {matchPeriod == 'winner' && winnerStatus == 0
+					? 'border-emerald-400 bg-emerald-500/20'
+					: ''}"
+			>
+				<div class="text-center">
+					<img
+						class="mx-auto mb-4 h-24 w-32 rounded-lg border-2 border-blue-500/30 object-cover"
+						src={matchState.robot1.photoUrl}
+						alt="Robot 1"
+					/>
+					<h2 class="mb-2 text-xl font-bold text-white">{matchState.robot1.name.toUpperCase()}</h2>
+					{#if matchPeriod == 'winner' && winnerStatus == 0}
+						<div
+							class="inline-flex items-center rounded-full bg-emerald-500 px-3 py-1 text-sm font-semibold text-white"
+						>
+							<svg class="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+								/>
+							</svg>
+							WINNER
+						</div>
 					{/if}
 				</div>
-				<div class="flex w-full flex-2 justify-end gap-2 bg-[#af1b33] text-right text-white">
-					<span class="py-1">{matchState.robot2.name.toUpperCase()}</span>
-					<img class="aspect-square h-20" src={matchState.robot2.photoUrl} alt="" />
+			</div>
+
+			<!-- Timer/Status Display -->
+			<div class="text-center {matchPeriod == 'winner' ? 'bg-emerald-500/20' : ''}">
+				<div class="from-slate-800/80 to-slate-700/80">
+					<div class="card-body py-8">
+						{#if matchPeriod != 'preload'}
+							<div class="space-y-2">
+								{#if matchPeriod == 'winner'}
+									<div class="mb-4 text-6xl font-bold text-emerald-400">🏆</div>
+									<div class="text-2xl font-bold text-emerald-400">{winnerMethod}</div>
+								{:else if precount != 0}
+									<div class="timer-display text-7xl">{precount}</div>
+									<div class="text-lg text-slate-300">Starting in...</div>
+									<div class="status-indicator status-paused mx-auto h-4 w-4"></div>
+								{:else}
+									<div class="timer-display text-6xl">
+										{Math.floor(time / 60)}:{(time % 60).toFixed(0).padStart(2, '0')}
+									</div>
+									<div class="text-lg text-slate-300">Match Time</div>
+									<div
+										class="status-indicator {matchPeriod == 'end'
+											? 'status-stopped'
+											: 'status-active'} mx-auto h-4 w-4"
+									></div>
+								{/if}
+							</div>
+						{:else}
+							<div class="text-4xl font-bold text-slate-200">Match Ready</div>
+							<div class="mt-2 text-lg text-slate-200">Waiting to start...</div>
+							<div class="status-indicator status-stopped mx-auto mt-4 h-16 w-16"></div>
+						{/if}
+					</div>
+				</div>
+			</div>
+
+			<!-- Robot 2 -->
+			<div
+				class="robot-card {matchPeriod == 'winner' && winnerStatus == 1
+					? 'border-emerald-400 bg-emerald-500/20'
+					: ''}"
+			>
+				<div class="text-center">
+					<img
+						class="mx-auto mb-4 h-24 w-32 rounded-lg border-2 border-red-500/30 object-cover"
+						src={matchState.robot2.photoUrl}
+						alt="Robot 2"
+					/>
+					<h2 class="mb-2 text-xl font-bold text-white">{matchState.robot2.name.toUpperCase()}</h2>
+					{#if matchPeriod == 'winner' && winnerStatus == 1}
+						<div
+							class="inline-flex items-center rounded-full bg-emerald-500 px-3 py-1 text-sm font-semibold text-white"
+						>
+							<svg class="mr-1 h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
+								<path
+									d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+								/>
+							</svg>
+							WINNER
+						</div>
+					{/if}
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<style>
+	:global(body) {
+		background-color: rgba(0, 0, 0, 0);
+		background: rgba(0, 0, 0, 0);
+		margin: 0px auto;
+		overflow: hidden;
+	}
+</style>
