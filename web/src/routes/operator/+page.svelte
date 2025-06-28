@@ -28,7 +28,7 @@
 	};
 
 	const callApi = async (endpoint: string, data: any, method?: string = 'GET') => {
-		return await fetch(`http://localhost:8080${endpoint}`, {
+		return await fetch(`http://${window.location.hostname}:8080${endpoint}`, {
 			method,
 			headers: {
 				Accept: 'application/json',

@@ -1,4 +1,4 @@
-export const timeRelative = (current: number, previous: number): string => {
+const timeRelative = (current: number, previous: number): string => {
 	let msPerMinute = 60 * 1000;
 	let msPerHour = msPerMinute * 60;
 	let msPerDay = msPerHour * 24;
@@ -21,3 +21,5 @@ export const timeRelative = (current: number, previous: number): string => {
 		return 'approximately ' + Math.round(elapsed / msPerYear) + ' years ago';
 	}
 };
+
+export { timeRelative };

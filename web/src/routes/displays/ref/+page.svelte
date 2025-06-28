@@ -29,7 +29,7 @@
 	};
 
 	const callApi = async (endpoint: string, data: any, method?: string = 'GET') => {
-		return await fetch(`http://localhost:8080${endpoint}`, {
+		return await fetch(`http://${window.location.hostname}:8080${endpoint}`, {
 			method,
 			headers: {
 				Accept: 'application/json',
@@ -51,6 +51,11 @@
 
 		io.on('matchUpdate', (data) => {
 			state.serverState = { ...state.serverState, ...data };
+		});
+
+		io.on('robotReady', (data) => {
+			const { robotId, ready } = data;
+			state.serverState[`robot${robotId + 1}`].ready = ready;
 		});
 
 		await loadDatabase();
@@ -89,11 +94,11 @@
 	};
 </script>
 
+<div class="absolute top-0 left-0 hidden p-6 sm:block">
+	<h1 class="mb-6 text-4xl font-bold">WPI Arena- Referee Panel</h1>
+	<p class="text-slate-400">Control match timing, declare winners</p>
+</div>
 <div class="flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white">
-	<div class="absolute top-0 left-0 p-6">
-		<h1 class="mb-6 text-4xl font-bold">WPI Arena- Referee Panel</h1>
-		<p class="text-slate-400">Control match timing, declare winners</p>
-	</div>
 	<div class="w-full max-w-4xl">
 		<!-- Referee Component -->
 		<Ref

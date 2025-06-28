@@ -10,7 +10,8 @@ import { Robot } from './arena/match.ts';
 
 config();
 
-const port = process.env.PORT || 3000;
+const port = parseInt(process.env.PORT || '3000');
+const host = process.env.IP || '0.0.0.0';
 
 console.log('Starting Server');
 
@@ -149,7 +150,6 @@ const main = async () => {
 		}
 	});
 
-	// Audience display control endpoints
 	app.post('/api/audience_overlay', (req: Request<{}, {}, { visible: boolean }>, res) => {
 		arena.setAudienceOverlayVisible(req.body.visible);
 		res.status(200).send('OK');
@@ -172,8 +172,23 @@ const main = async () => {
 	);
 
 	app.use(handler);
-	server.listen(port, () => {
-		console.log(`Listening on port ${port}`);
+	server.listen(port, host, 511, () => {
+		console.log('WPI Arena');
+		console.log(` Server: http://${host}:${port}`);
+		console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
+		console.log(
+			` TrueFinals Integration: ${process.env.TF_TOURNAMENT_ID ? 'Enabled' : 'Disabled'}`
+		);
+		console.log(` Match Duration: ${process.env.MATCH_TIME}s`);
+	});
+
+	// Graceful shutdown
+	process.on('SIGINT', () => {
+		console.log('\n Shutting down WPI Arena');
+		server.close(() => {
+			console.log(' Server closed');
+			process.exit(0);
+		});
 	});
 };
 

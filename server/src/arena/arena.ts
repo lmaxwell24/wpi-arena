@@ -25,7 +25,7 @@ class ArenaSocket {
 	constructor(server: httpServer) {
 		this.io = new Server(server, {
 			cors: {
-				origin: 'http://localhost:5173'
+				origin: process.env.NODE_ENV !== 'production' ? true : undefined
 			}
 		});
 		this.timer = new Timer(Number(process.env.MATCH_TIME));

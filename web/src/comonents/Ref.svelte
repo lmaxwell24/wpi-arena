@@ -77,9 +77,9 @@
 						Restart
 					</button>
 				</div>
-				<div class="flex gap-3">
+				<div class="grid grid-cols-3 gap-3 lg:grid-cols-4">
 					<input
-						class="input flex-1"
+						class="input col-span-2 lg:col-span-3"
 						type="number"
 						bind:value={overwriteTime}
 						placeholder="Set time (seconds)"
