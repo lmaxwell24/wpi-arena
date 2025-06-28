@@ -23,10 +23,9 @@
 	<!-- Timer Display -->
 	<div class="card-header text-center">
 		<div class="timer-display mb-2 text-6xl">
-			{precount > 0 ? precount : Math.floor(time / 60)}
-			{#if precount == 0}
-				:{(time % 60).toFixed(1).padStart(4, '0')}
-			{/if}
+			{precount > 0 ? precount : Math.floor(time / 60)}{#if precount == 0}:{(time % 60)
+					.toFixed(1)
+					.padStart(4, '0')}{/if}
 		</div>
 		<div class="flex items-center justify-center space-x-2">
 			<div
