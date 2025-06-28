@@ -52,10 +52,10 @@
 		subtitle: 'subtext'
 	};
 
-  let currentTime = Date.now();
-  setInterval(() => {
-    currentTime = Date.now();
-  }, 1000 * 30); // Update currentTime every 30 seconds
+	let currentTime = Date.now();
+	setInterval(() => {
+		currentTime = Date.now();
+	}, 1000 * 30); // Update currentTime every 30 seconds
 
 	const loadDatabase = async () => {
 		let players_raw = await callApi('/api/players');
@@ -162,13 +162,13 @@
 	<div class="mx-auto max-w-7xl">
 		<!-- Header -->
 		<div class="mb-8">
-			<h1 class="mb-2 text-3xl font-bold text-white">Robot Arena - Operator Panel</h1>
+			<h1 class="mb-2 text-3xl font-bold text-white">WPI Arena - Operator Panel</h1>
 			<p class="text-slate-400">Control match timing, load competitions, and manage the arena</p>
 		</div>
 
 		<div class="grid grid-cols-1 gap-6 xl:grid-cols-2">
 			<!-- Referee Controls -->
-			<div>
+			<div class="flex items-center justify-center">
 				<Ref
 					{startTimer}
 					{resumeTimer}
@@ -250,63 +250,65 @@
 							</button>
 						</div>
 					</div>
-					<!-- overlay controls -->
-					<div class="rounded-lg bg-slate-700/50 p-4">
-						<h3 class="mb-4 text-center text-lg font-medium text-white">Overlay Controls</h3>
-						<div class="space-y-3">
-							<button
-								class="btn btn-secondary w-full"
-								onclick={() => {
-									setOverlayVisible(true);
-								}}
-							>
-								Open Overlay
-							</button>
-							<button class="btn btn-secondary w-full" onclick={() => setOverlayVisible(false)}>
-								Close Overlay
-							</button>
-						</div>
-					</div>
-
-					<!-- lower third controls -->
-					<div class="rounded-lg bg-slate-700/50 p-4">
-						<h3 class="mb-4 text-center text-lg font-medium text-white">Lower Third Controls</h3>
-						<div class="space-y-3">
-							<input
-								type="text"
-								placeholder="Title"
-								class="input w-full"
-								bind:value={lowerThird.title}
-							/>
-							<input
-								type="text"
-								placeholder="Subtitle"
-								class="input w-full"
-								bind:value={lowerThird.subtitle}
-							/>
-							<div class="flex items-center justify-between">
-								<span class="text-lg text-slate-400">Visible</span>
-								<!-- custom checkbox -->
-								<span
-									class="relative inline-block h-6 w-10"
-									onclick={() => (lowerThird.visible = !lowerThird.visible)}
+					<div class="spread-y-3 flex flex-col gap-3 rounded-lg bg-slate-700/50 p-4">
+						<!-- overlay controls -->
+						<div class="to-combat-red/40 rounded-lg bg-gradient-to-br from-zinc-800/40 p-4">
+							<h3 class="mb-4 text-center text-lg font-medium text-white">Overlay Controls</h3>
+							<div class="space-y-3">
+								<button
+									class="btn btn-secondary w-full"
+									onclick={() => {
+										setOverlayVisible(true);
+									}}
 								>
-									<input type="checkbox" class="peer sr-only" bind:checked={lowerThird.visible} />
-									<div
-										class="block h-6 w-10 rounded-full bg-gray-600 peer-checked:bg-blue-500 peer-focus:bg-blue-500"
-									></div>
-									<div
-										class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out peer-checked:translate-x-full"
-									></div>
-								</span>
+									Open Overlay
+								</button>
+								<button class="btn btn-secondary w-full" onclick={() => setOverlayVisible(false)}>
+									Close Overlay
+								</button>
 							</div>
-							<button
-								class="btn btn-secondary w-full"
-								onclick={() =>
-									setLowerThird(lowerThird.visible, lowerThird.title, lowerThird.subtitle)}
-							>
-								Send update
-							</button>
+						</div>
+
+						<!-- lower third controls -->
+						<div class="to-combat-red/40 rounded-lg bg-gradient-to-br from-zinc-800/40 p-4">
+							<h3 class="mb-4 text-center text-lg font-medium text-white">Lower Third Controls</h3>
+							<div class="space-y-3">
+								<input
+									type="text"
+									placeholder="Title"
+									class="input w-full"
+									bind:value={lowerThird.title}
+								/>
+								<input
+									type="text"
+									placeholder="Subtitle"
+									class="input w-full"
+									bind:value={lowerThird.subtitle}
+								/>
+								<div class="flex items-center justify-between">
+									<span class="text-lg">Visible</span>
+									<!-- custom checkbox -->
+									<span
+										class="relative inline-block h-6 w-10"
+										onclick={() => (lowerThird.visible = !lowerThird.visible)}
+									>
+										<input type="checkbox" class="peer sr-only" bind:checked={lowerThird.visible} />
+										<div
+											class="block h-6 w-10 rounded-full bg-gray-600 peer-checked:bg-blue-500 peer-focus:bg-blue-500"
+										></div>
+										<div
+											class="absolute top-1 left-1 h-4 w-4 rounded-full bg-white transition-transform duration-200 ease-in-out peer-checked:translate-x-full"
+										></div>
+									</span>
+								</div>
+								<button
+									class="btn btn-secondary w-full"
+									onclick={() =>
+										setLowerThird(lowerThird.visible, lowerThird.title, lowerThird.subtitle)}
+								>
+									Send update
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>

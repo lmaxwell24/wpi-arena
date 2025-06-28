@@ -89,21 +89,30 @@
 	};
 </script>
 
-<Ref
-	{startTimer}
-	{resumeTimer}
-	{pauseTimer}
-	{restartTimer}
-	{overwriteTimer}
-	{overwriteTime}
-	time={state.time.toPrecision(4)}
-	precount={state.precount}
-	bind:selectedWinner={state.selectedWinner}
-	robot1Name={state.serverState.robot1.name}
-	robot2Name={state.serverState.robot2.name}
-	bind:winningMode={state.winningMode}
-	ready1={state.serverState.robot1.ready}
-	ready2={state.serverState.robot2.ready}
-	{sendReadyStatus}
-	{emitWinner}
-/>
+<div class="flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white">
+	<div class="absolute top-0 left-0 p-6">
+		<h1 class="mb-6 text-4xl font-bold">WPI Arena- Referee Panel</h1>
+		<p class="text-slate-400">Control match timing, declare winners</p>
+	</div>
+	<div class="w-full max-w-4xl">
+		<!-- Referee Component -->
+		<Ref
+			{startTimer}
+			{resumeTimer}
+			{pauseTimer}
+			{restartTimer}
+			{overwriteTimer}
+			{overwriteTime}
+			time={state.time.toPrecision(4)}
+			precount={state.precount}
+			bind:selectedWinner={state.selectedWinner}
+			robot1Name={state.serverState.robot1.name}
+			robot2Name={state.serverState.robot2.name}
+			bind:winningMode={state.winningMode}
+			ready1={state.serverState.robot1.ready}
+			ready2={state.serverState.robot2.ready}
+			{sendReadyStatus}
+			{emitWinner}
+		/>
+	</div>
+</div>
