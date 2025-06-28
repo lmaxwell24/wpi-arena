@@ -52,6 +52,14 @@
 			winnerMethod = method;
 			winnerStatus = player;
 		});
+
+		if (window.obsstudio) {
+			// make body transparent if OBS is detected
+			document.body.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+			document.body.style.background = 'rgba(0, 0, 0, 0)';
+			document.body.style.margin = '0';
+			document.body.style.overflow = 'hidden';
+		}
 	});
 </script>
 
@@ -169,12 +177,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	:global(body) {
-		background-color: rgba(0, 0, 0, 0);
-		background: rgba(0, 0, 0, 0);
-		margin: 0px auto;
-		overflow: hidden;
-	}
-</style>
