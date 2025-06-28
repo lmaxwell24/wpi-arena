@@ -12,7 +12,10 @@
 		robot1Name,
 		robot2Name,
 		winningMode = $bindable(),
-		emitWinner
+		emitWinner,
+		ready1,
+		ready2,
+		sendReadyStatus
 	} = $props();
 </script>
 
@@ -44,10 +47,33 @@
 		<div>
 			<h2 class="mb-4 text-center text-xl font-semibold text-white">Timer Control</h2>
 			<div class="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-				<button class="btn btn-success" onclick={startTimer}> Start </button>
-				<button class="btn btn-primary" onclick={resumeTimer}> Resume </button>
-				<button class="btn btn-secondary" onclick={pauseTimer}> Pause </button>
-				<button class="btn btn-danger" onclick={restartTimer}> Restart </button>
+				<button
+					class="btn btn-success disabled:cursor-not-allowed disabled:opacity-50"
+					onclick={startTimer}
+					disabled={!(ready1 && ready2)}
+				>
+					Start
+				</button>
+				<button
+					class="btn btn-primary disabled:cursor-not-allowed disabled:opacity-50"
+					onclick={resumeTimer}
+					disabled={precount > 0}
+				>
+					Resume
+				</button>
+				<button
+					class="btn btn-secondary disabled:cursor-not-allowed disabled:opacity-50"
+					onclick={pauseTimer}
+					disabled={precount > 0}
+				>
+					Pause
+				</button>
+				<button
+					class="btn btn-danger disabled:cursor-not-allowed disabled:opacity-50"
+					onclick={restartTimer}
+				>
+					Restart
+				</button>
 			</div>
 			<div class="flex gap-3">
 				<input
@@ -72,10 +98,30 @@
 
 		<!-- Winner Selection -->
 		<div>
-			<h2 class="mb-6 text-center text-xl font-semibold text-white">Declare Winner</h2>
-
 			<!-- Robot Selection -->
 			<div class="mb-6 grid grid-cols-2 gap-4">
+				<button
+					class="btn {ready1 ? 'bg-emerald-950' : 'btn-secondary'} "
+					onclick={() => {
+						sendReadyStatus(0, !ready1);
+					}}
+				>
+					<div class="status-indicator {ready1 ? 'status-active' : 'status-stopped'} mr-3"></div>
+					<span class="text-lg font-medium {ready1 ? 'text-emerald-400' : 'text-red-400'}">
+						{ready1 ? 'Ready' : 'Not Ready'}
+					</span>
+				</button>
+				<button
+					class="btn {ready2 ? 'bg-emerald-950' : 'btn-secondary'} "
+					onclick={() => {
+						sendReadyStatus(1, !ready2);
+					}}
+				>
+					<div class="status-indicator {ready2 ? 'status-active' : 'status-stopped'} mr-3"></div>
+					<span class="text-lg font-medium {ready2 ? 'text-emerald-400' : 'text-red-400'}">
+						{ready2 ? 'Ready' : 'Not Ready'}
+					</span>
+				</button>
 				<button
 					class="robot-card cursor-pointer bg-gradient-to-r from-blue-500/20 to-blue-600/20 p-6 transition-all duration-200 {selectedWinner ==
 					0
@@ -119,6 +165,7 @@
 				</button>
 			</div>
 
+			<h2 class="mb-6 text-center text-xl font-semibold text-white">Declare Winner</h2>
 			<!-- Win Methods -->
 			<div class="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
 				{#each [{ code: 'KO', name: 'Knockout', icon: '⚡' }, { code: 'TO', name: 'Tapout', icon: '🏳️' }, { code: 'JD', name: "Judge's Decision", icon: '⚖️' }, { code: 'TKO', name: 'Technical KO', icon: '🔧' }] as wintype}

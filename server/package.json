@@ -21,6 +21,7 @@
 		"@types/cors": "^2.8.19",
 		"@types/dotenv-safe": "^8.1.6",
 		"@types/express": "^5.0.3",
+		"@types/morgan": "^1.9.10",
 		"@types/node": "^24.0.3",
 		"@types/socket.io": "^3.0.2",
 		"cors": "^2.8.5",
@@ -36,6 +37,7 @@
 	"dependencies": {
 		"dotenv-safe": "^9.1.0",
 		"express": "^5.1.0",
+		"morgan": "^1.10.0",
 		"openapi-fetch": "^0.14.0",
 		"socketio": "^1.0.0"
 	}

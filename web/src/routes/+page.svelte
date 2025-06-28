@@ -1,5 +1,5 @@
 <div
-	class="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900/20 to-slate-900 p-8"
+	class="from-combat-black to-combat-red flex min-h-screen items-center justify-center bg-gradient-to-br p-8"
 >
 	<div class="mx-auto max-w-4xl text-center">
 		<!-- Header -->
@@ -7,7 +7,7 @@
 			<h1
 				class="mb-4 bg-gradient-to-r from-blue-400 via-cyan-400 to-purple-400 bg-clip-text text-6xl font-bold text-transparent"
 			>
-				WPI Robot Arena
+				WPI Arena
 			</h1>
 			<p class="mx-auto max-w-2xl text-xl leading-relaxed text-slate-300">
 				Professional robot competition management system. Control matches, timers, and displays all
@@ -16,7 +16,7 @@
 		</div>
 
 		<!-- Navigation Cards -->
-		<div class="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+		<div class="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
 			<a href="/operator" class="group card transition-all duration-300 hover:scale-105">
 				<div class="card-body text-center">
 					<div
@@ -108,6 +108,38 @@
 						Audience Display
 					</h3>
 					<p class="text-sm text-slate-400">Spectator view with match information</p>
+				</div>
+			</a>
+
+			<a href="/displays/robot/1" class="group card transition-all duration-300 hover:scale-105">
+				<div class="card-body text-center">
+					<div
+						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600"
+					>
+						<span class="text-2xl font-bold text-white">1</span>
+					</div>
+					<h3
+						class="mb-2 text-lg font-semibold text-white transition-colors group-hover:text-blue-400"
+					>
+						Robot 1 Display
+					</h3>
+					<p class="text-sm text-slate-400">Robot 1 timer and ready status</p>
+				</div>
+			</a>
+
+			<a href="/displays/robot/2" class="group card transition-all duration-300 hover:scale-105">
+				<div class="card-body text-center">
+					<div
+						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-red-500 to-red-600"
+					>
+						<span class="text-2xl font-bold text-white">2</span>
+					</div>
+					<h3
+						class="mb-2 text-lg font-semibold text-white transition-colors group-hover:text-red-400"
+					>
+						Robot 2 Display
+					</h3>
+					<p class="text-sm text-slate-400">Robot 2 timer and ready status</p>
 				</div>
 			</a>
 		</div>

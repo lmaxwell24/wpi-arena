@@ -4,6 +4,7 @@ import express, { Request } from 'express';
 import { createServer } from 'node:http';
 import { config } from 'dotenv-safe';
 import cors from 'cors';
+import morgan from 'morgan';
 import { handler } from '../../web/build/handler.ts';
 import { Robot } from './arena/match.ts';
 
@@ -25,6 +26,7 @@ const main = async () => {
 
 	const arena = new ArenaSocket(server);
 
+	app.use(morgan('combined'));
 	app.use(express.json()); // for parsing application/json
 	app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -43,6 +45,14 @@ const main = async () => {
 	app.get('/api/game_info', async (_req, res) => {
 		res.send(arena.matchState);
 	});
+
+	app.post(
+		'/api/robot_ready',
+		async (req: Request<{}, {}, { robotId: number; ready: boolean }>, res) => {
+			arena.setReady(req.body.robotId, req.body.ready);
+			res.status(200).send('OK');
+		}
+	);
 
 	app.post(
 		'/api/raw_match',
@@ -70,8 +80,8 @@ const main = async () => {
 		}
 
 		arena.setMatch(
-			{ ...player1, photoUrl: player1.photoUrl as string | undefined },
-			{ ...player2, photoUrl: player2.photoUrl as string | undefined },
+			{ ...player1, photoUrl: player1.photoUrl as string | undefined, ready: false },
+			{ ...player2, photoUrl: player2.photoUrl as string | undefined, ready: false },
 			currentMatch.name
 		);
 		arena.setMatchId(currentMatch.id);

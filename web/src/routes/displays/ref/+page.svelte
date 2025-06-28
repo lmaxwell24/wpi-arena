@@ -12,12 +12,16 @@
 			robot1: {
 				name: 'Robot 1',
 				photoUrl:
-					"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E"
+					"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E",
+
+				ready: false
 			},
 			robot2: {
 				name: 'Robot 2',
 				photoUrl:
-					"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E"
+					"data:image/svg+xml;charset=utf8,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%3E%3C/svg%3E",
+
+				ready: false
 			},
 			compName: 'A Robot Comp',
 			compMatch: 'Semifinals'
@@ -78,6 +82,11 @@
 		state.selectedWinner = null;
 		state.winningMode = '';
 	};
+
+	const sendReadyStatus = async (robotId: number, ready: boolean) => {
+		await callApi('/api/robot_ready', { robotId, ready }, 'POST');
+		state.serverState[`robot${robotId + 1}`].ready = ready;
+	};
 </script>
 
 <Ref
@@ -93,5 +102,8 @@
 	robot1Name={state.serverState.robot1.name}
 	robot2Name={state.serverState.robot2.name}
 	bind:winningMode={state.winningMode}
+	ready1={state.serverState.robot1.ready}
+	ready2={state.serverState.robot2.ready}
+	{sendReadyStatus}
 	{emitWinner}
 />

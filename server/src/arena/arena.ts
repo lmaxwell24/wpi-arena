@@ -21,8 +21,8 @@ class ArenaSocket {
 		this.timer = new Timer(Number(process.env.MATCH_TIME));
 
 		this.matchState = {
-			robot1: { name: 'Robot 1' },
-			robot2: { name: 'Robot 2' },
+			robot1: { name: 'Robot 1', ready: false },
+			robot2: { name: 'Robot 2', ready: false },
 			compName: process.env.TOURNAMENT_NAME,
 			compMatch: 'Test Match'
 		};
@@ -86,16 +86,29 @@ class ArenaSocket {
 		this.loadedMatch = id;
 	}
 
+	setReady(id: number, state: boolean) {
+		this.io.emit('robotReady', { robotId: id, ready: state });
+		if (id == 0) {
+			this.matchState.robot1.ready = state;
+		} else if (id == 1) {
+			this.matchState.robot2.ready = state;
+		} else {
+			console.error('Invalid robot');
+		}
+	}
+
 	setMatch(robot1?: Robot, robot2?: Robot, compMatch?: string) {
 		this.loadedMatch = '';
 		this.restart();
 		this.matchState = {
 			...this.matchState,
-			robot1: { ...this.matchState.robot1, ...robot1 },
-			robot2: { ...this.matchState.robot2, ...robot2 },
+			robot1: { ...this.matchState.robot1, ...robot1, ready: false },
+			robot2: { ...this.matchState.robot2, ...robot2, ready: false },
 			compMatch: compMatch || this.matchState.compMatch
 		};
 		this.io.emit('matchUpdate', { robot1, robot2, compMatch });
+		this.io.emit('robotReady', { robotId: 0, ready: false });
+		this.io.emit('robotReady', { robotId: 1, ready: false });
 	}
 }
 

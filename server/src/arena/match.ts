@@ -1,6 +1,7 @@
 type Robot = {
 	name: string;
 	photoUrl?: string;
+	ready: boolean;
 };
 
 type MatchState = {
