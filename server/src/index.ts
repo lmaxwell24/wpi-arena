@@ -113,6 +113,11 @@ const main = async () => {
 		}
 	);
 
+	app.post('/api/tap_out', async (req: Request<{}, {}, { robotId: 0 | 1 }>, res) => {
+		arena.setWinner(req.body.robotId == 1 ? 0 : 1, 'TO');
+		res.status(200).send('OK');
+	});
+
 	app.post('/api/timer', (req, res) => {
 		switch (req.body.control) {
 			case 'start':

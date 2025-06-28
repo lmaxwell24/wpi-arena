@@ -56,6 +56,10 @@ body {
 	@apply bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500;
 }
 
+.btn-large {
+	@apply text-8xl;
+}
+
 /* Enhanced card styles */
 .card {
 	@apply backdrop-blur-sm;

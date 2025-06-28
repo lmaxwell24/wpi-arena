@@ -81,6 +81,9 @@ class ArenaSocket {
 	}
 
 	setWinner(who: 0 | 1, method: string) {
+		if (this.timer.running) {
+			this.timer.pause();
+		}
 		this.io.emit('winner', { player: who, method });
 	}
 

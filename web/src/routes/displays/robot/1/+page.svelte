@@ -65,6 +65,14 @@
 	let didWin: boolean = false;
 	let winnerMethod = '';
 
+	const tapOut = async () => {
+		try {
+			await callApi('/api/tap_out', { robotId: 0 }, 'POST');
+		} catch (error) {
+			console.error('Failed to tap out:', error);
+		}
+	};
+
 	onMount(() => {
 		// Update robot info when match loads
 		robotInfo = {
@@ -197,45 +205,59 @@
 			</div>
 		</div>
 
-		<!-- Ready Button -->
-		<div class="card bg-gradient-to-br from-slate-800/50 to-slate-700/50">
-			<div class="card-body py-8">
-				<button
-					class="btn mx-auto w-full max-w-md px-12 py-6 text-2xl font-bold transition-all duration-300 {isReady
-						? 'bg-emerald-600 text-white hover:bg-emerald-700'
-						: 'bg-blue-600 text-white hover:bg-blue-700'}"
-					onclick={toggleReady}
-				>
-					<div class="flex items-center justify-center space-x-3">
-						{#if isReady}
-							<svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-								></path>
-							</svg>
-							<span>READY!</span>
-						{:else}
-							<svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									stroke-width="2"
-									d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-								></path>
-							</svg>
-							<span>MARK READY</span>
-						{/if}
-					</div>
-				</button>
+		{#if matchPeriod === 'preload'}
+			<!-- Ready Button -->
+			<div class="card bg-gradient-to-br from-slate-800/50 to-slate-700/50">
+				<div class="card-body py-8">
+					<button
+						class="btn mx-auto w-full max-w-md px-12 py-6 text-2xl font-bold transition-all duration-300 {isReady
+							? 'bg-emerald-600 text-white hover:bg-emerald-700'
+							: 'bg-blue-600 text-white hover:bg-blue-700'}"
+						onclick={toggleReady}
+					>
+						<div class="flex items-center justify-center space-x-3">
+							{#if isReady}
+								<svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+									></path>
+								</svg>
+								<span>READY!</span>
+							{:else}
+								<svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+									<path
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										stroke-width="2"
+										d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+									></path>
+								</svg>
+								<span>MARK READY</span>
+							{/if}
+						</div>
+					</button>
 
-				<div class="mt-4 text-sm text-slate-400">
-					Click to toggle your ready status for the match
+					<div class="mt-4 text-sm text-slate-400">
+						Click to toggle your ready status for the match
+					</div>
 				</div>
 			</div>
-		</div>
+		{:else if matchPeriod === 'start' || matchPeriod === 'pause'}
+			<!-- Tap out button -->
+			<div class="card bg-gradient-to-br from-slate-800/50 to-slate-700/50">
+				<div class="card-body py-8">
+					<button
+						class="btn btn-large w-full bg-zinc-500 px-6 py-16 text-2xl font-bold text-white transition-all duration-300 hover:bg-red-700"
+						onclick={tapOut}
+					>
+						TAP OUT
+					</button>
+				</div>
+			</div>
+		{/if}
 
 		<!-- Visual Elements -->
 		<div class="pointer-events-none absolute top-0 left-0 h-full w-full overflow-hidden">
