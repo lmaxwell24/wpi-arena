@@ -132,7 +132,7 @@
 						>
 							{robotInfo.name}
 						</h1>
-						<p class="text-xl font-medium text-slate-300">Robot 2 Display</p>
+						<p class="text-xl font-medium text-slate-300">Robot 2 Status</p>
 						<div class="mt-2 flex items-center justify-end">
 							<div
 								class="status-indicator {isReady ? 'status-active' : 'status-stopped'} mr-3"
