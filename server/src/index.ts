@@ -35,6 +35,22 @@ const main = async () => {
 		res.send(await tfApi.getTourney());
 	});
 
+  app.post('/api/tournament', async (req: Request<{}, {}, { tournamentId: string }>, res) => {
+    if (!req.body.tournamentId) {
+      res.status(400).send('Tournament ID is required');
+      return;
+    }
+    tfApi.setActiveTournament(req.body.tournamentId);
+    res.status(200).send('OK');
+  });
+
+  app.get('/api/tournament', (_req, res) => {
+    res.status(200).send({
+      activeTournament: tfApi.getActiveTournament(),
+      availableTournaments: tfApi.getAvailableTournaments()
+    });
+  });
+
 	app.get('/api/players', async (_req, res) => {
 		res.send(await tfApi.getPlayers());
 	});
@@ -54,6 +70,12 @@ const main = async () => {
 			res.status(200).send('OK');
 		}
 	);
+	app.get('/api/robot_ready', (_req, res) => {
+		res.status(200).send({
+			robot1: arena.matchState.robot1.ready,
+			robot2: arena.matchState.robot2.ready
+		});
+	});
 
 	app.post(
 		'/api/raw_match',
@@ -66,17 +88,17 @@ const main = async () => {
 	app.post('/api/load_match', async (req: Request<{}, {}, { matchId: string }>, res) => {
 		let currentMatch = await tfApi.getMatchInfo(req.body.matchId);
 		if (isApiError(currentMatch)) {
-			res.send('400');
+			res.status(400).send('Invalid match ID');
 			return;
 		}
 		let player1 = await tfApi.getPlayer(currentMatch.slots[0].playerID as string);
 		if (isApiError(player1)) {
-			res.send('400');
+			res.status(400).send('Invalid player ID for player 1');
 			return;
 		}
 		let player2 = await tfApi.getPlayer(currentMatch.slots[1].playerID as string);
 		if (isApiError(player2)) {
-			res.send('400');
+			res.status(400).send('Invalid player ID for player 2');
 			return;
 		}
 
@@ -150,9 +172,24 @@ const main = async () => {
 		}
 	});
 
+	app.get('/api/timer', (_req, res) => {
+		res.status(200).send({
+			time: arena.timer.time,
+			precount: arena.timer.precount,
+			running: arena.timer.running,
+			finished: arena.timer.finished
+		});
+	});
+
 	app.post('/api/audience_overlay', (req: Request<{}, {}, { visible: boolean }>, res) => {
 		arena.setAudienceOverlayVisible(req.body.visible);
 		res.status(200).send('OK');
+	});
+
+	app.get('/api/audience_overlay', (_req, res) => {
+		res.status(200).send({
+			visible: arena.audienceOverlayVisible
+		});
 	});
 
 	app.post(
@@ -162,6 +199,13 @@ const main = async () => {
 			res.status(200).send('OK');
 		}
 	);
+	app.get('/api/lower_third', (_req, res) => {
+		res.status(200).send({
+			visible: arena.lowerThird.visible,
+			title: arena.lowerThird.title,
+			subtitle: arena.lowerThird.subtitle
+		});
+	});
 
 	app.post(
 		'/api/display_state',
