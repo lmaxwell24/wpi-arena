@@ -52,7 +52,7 @@
 					<button
 						class="btn btn-success disabled:cursor-not-allowed disabled:opacity-50"
 						onclick={startTimer}
-						disabled={!(ready1 && ready2)}
+						disabled={!(ready1 && ready2) || precount !== 5}
 					>
 						Start
 					</button>

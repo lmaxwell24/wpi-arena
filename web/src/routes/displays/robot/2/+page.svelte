@@ -170,7 +170,7 @@
 		</div>
 
 		<!-- Timer Display -->
-		<div class="card mb-8 bg-gradient-to-br from-slate-800/80 to-slate-700/80">
+		<div class="card mb-8 bg-gradient-to-br from-slate-800/40 to-slate-700/40">
 			<div class="card-body py-12">
 				<div class="space-y-6">
 					{#if matchPeriod === 'winner'}
@@ -213,7 +213,7 @@
 					<button
 						class="btn mx-auto w-full max-w-md px-12 py-6 text-2xl font-bold transition-all duration-300 {isReady
 							? 'bg-emerald-600 text-white hover:bg-emerald-700'
-							: 'bg-red-600 text-white hover:bg-red-700'}"
+							: 'animate-pulse bg-red-600 text-white hover:bg-red-700'}"
 						onclick={toggleReady}
 					>
 						<div class="flex items-center justify-center space-x-3">
@@ -263,11 +263,13 @@
 		<!-- Visual Elements -->
 		<div class="pointer-events-none absolute top-0 left-0 -z-10 h-full w-full overflow-hidden">
 			<!-- Decorative circles with red theme -->
-			<div class="absolute top-10 left-10 h-32 w-32 rounded-full border border-red-500/20"></div>
+			<div class="absolute top-10 left-10 h-32 w-32 rounded-full border-4 border-red-500/20"></div>
 			<div class="absolute right-10 bottom-10 -z-10 h-48 w-48">
 				<img src="/img/goat.png" alt="Goat" class="h-full w-full object-cover" />
 			</div>
-			<div class="absolute top-1/2 right-20 h-24 w-24 rounded-full border border-red-400/20"></div>
+			<div
+				class="absolute top-1/2 right-20 h-24 w-24 rounded-full border-4 border-red-400/20"
+			></div>
 		</div>
 	</div>
 	<!-- Confetti Effect -->
