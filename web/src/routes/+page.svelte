@@ -16,7 +16,7 @@
 		</div>
 
 		<!-- Navigation Cards -->
-		<div class="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+		<div class="mb-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
 			<a href="/operator" class="group card transition-all duration-300 hover:scale-105">
 				<div class="card-body text-center">
 					<div
@@ -39,6 +39,22 @@
 					<p class="text-sm text-slate-400">
 						Control matches, load games, and manage competition state
 					</p>
+				</div>
+			</a>
+
+			<a href="/queueing" class="group card transition-all duration-300 hover:scale-105">
+				<div class="card-body text-center">
+					<div
+						class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-gradient-to-br from-zinc-500 to-zinc-700"
+					>
+						<span class="text-2xl font-bold text-white">Q</span>
+					</div>
+					<h3
+						class="mb-2 text-lg font-semibold text-white transition-colors group-hover:text-zinc-400"
+					>
+						Queueing
+					</h3>
+					<p class="text-sm text-slate-400">View currently queued information</p>
 				</div>
 			</a>
 
