@@ -262,12 +262,13 @@
 		{/if}
 
 		<!-- Visual Elements -->
-		<div class="pointer-events-none absolute top-0 left-0 h-full w-full overflow-hidden">
+		<div class="pointer-events-none absolute top-0 left-0 -z-10 h-full w-full overflow-hidden">
 			<!-- Decorative circles with blue theme -->
 			<div class="absolute top-10 left-10 h-32 w-32 rounded-full border border-blue-500/20"></div>
-			<div
-				class="absolute right-10 bottom-10 h-48 w-48 rounded-full border border-cyan-500/20"
-			></div>
+			<div class="absolute right-10 bottom-10 -z-10 h-48 w-48">
+				<img src="/img/goat.png" alt="Goat" class="h-full w-full object-cover hue-rotate-195" />
+				<!-- make it blue -->
+			</div>
 			<div class="absolute top-1/2 right-20 h-24 w-24 rounded-full border border-blue-400/20"></div>
 		</div>
 	</div>
