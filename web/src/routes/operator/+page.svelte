@@ -277,7 +277,7 @@
 									>Available Matches</label
 								>
 								<select bind:value={selectedGame} class="select w-full">
-									{#each games.filter((a) => a.state == 'available') as game}
+									{#each games.filter((a) => a.state == 'available' || a.state == 'called' || a.state == 'active') as game}
 										<option value={game}>
 											{game.name}: {getPlayerById(game.slots[0].playerID).name} vs {getPlayerById(
 												game.slots[1].playerID

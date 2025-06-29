@@ -157,9 +157,10 @@ const main = async () => {
 		res.status(200).send('OK');
 	});
 
-	app.post('/api/timer', (req, res) => {
+	app.post('/api/timer', async (req, res) => {
 		switch (req.body.control) {
 			case 'start':
+				await tfApi.markGameActive(arena.loadedMatch, arena.matchState.compEvent);
 				arena.start();
 				res.send(200);
 				break;

@@ -77,15 +77,15 @@
 			<div
 				class="max-w-xl grow-1 rounded-lg bg-gradient-to-br from-slate-600/20 to-slate-700/20 p-6 shadow-lg {game.state ===
 				'called'
-					? 'border-yellow-500/50 animate-pulse'
+					? 'animate-pulse border-yellow-500/50 from-yellow-600/20 to-yellow-700/20'
 					: game.state === 'active'
-						? 'border-blue-500/50'
+						? 'border-blue-500/50 from-blue-600/20 to-blue-700/20'
 						: game.state === 'hold'
 							? 'border-zinc-500/50'
 							: ''} {game.state !== 'available' ? 'border-10 border-solid' : ''}"
 			>
 				<div class="grid grid-cols-3">
-					<div class="robot-card">
+					<div class="robot-card bg-gradient-to-r from-blue-500/10 to-blue-600/10">
 						<div class="text-center">
 							<img
 								class="mx-auto mb-4 h-24 w-32 rounded-lg border-6 border-blue-500/30 object-cover"
@@ -110,7 +110,7 @@
 							{game.state || 'N/A'}
 						</span>
 					</div>
-					<div class="robot-card">
+					<div class="robot-card bg-gradient-to-r from-red-500/10 to-red-600/10">
 						<div class="text-center">
 							<img
 								class="mx-auto mb-4 h-24 w-32 rounded-lg border-6 border-red-500/30 object-cover"
@@ -123,24 +123,26 @@
 						</div>
 					</div>
 				</div>
-				{#if game.availableSince}
-					<h3 class="w-full text-center text-sm">
-						(Available since {timeRelative(currentTime, game.availableSince)})
-					</h3>
-				{/if}
-				{#if game.calledSince}
-					<h3
-						class="w-full bg-gradient-to-br from-yellow-600 to-yellow-700 bg-clip-text text-center text-lg font-bold text-transparent"
-					>
-						(Called since {timeRelative(currentTime, game.calledSince)})
-					</h3>
-				{/if}
+				<div class="mt-4">
+					{#if game.availableSince}
+						<h3 class="w-full text-center text-sm">
+							(Available since {timeRelative(currentTime, game.availableSince)})
+						</h3>
+					{/if}
+					{#if game.calledSince}
+						<h3
+							class="w-full bg-gradient-to-br from-yellow-600 to-yellow-700 bg-clip-text text-center text-lg font-bold text-transparent"
+						>
+							(Called since {timeRelative(currentTime, game.calledSince)})
+						</h3>
+					{/if}
+				</div>
 			</div>
 		{/each}
 	</div>
 	<div class="pointer-events-none absolute top-0 left-0 h-full w-full overflow-hidden">
 		<!-- Decorative circles with red theme -->
-		<div class="absolute right-10 bottom-10 h-48 w-48 opacity-25">
+		<div class="absolute right-10 bottom-10 -z-10 h-48 w-48 opacity-25">
 			<img src="/img/goat.png" alt="Goat" class="h-full w-full object-cover" />
 		</div>
 	</div>

@@ -158,6 +158,33 @@ class TrueFinals {
 		}
 	}
 
+	async markGameActive(gameId: string, tournamentId: string = this.activeTournament) {
+		const { error } = await this.client.POST('/v1/tournaments/{tournamentID}/games/{gameID}', {
+			params: {
+				path: {
+					tournamentID: tournamentId,
+					gameID: gameId
+				},
+				header: {
+					'x-api-key': this.apiKey,
+					'x-api-user-id': this.userId
+				}
+			},
+			body: {
+				state: 'active',
+				slots: [
+					{ score: 0, checkIn: 'checked_in' },
+					{ score: 0, checkIn: 'checked_in' }
+				],
+				locationID: null,
+				resultAnnotation: null
+			}
+		});
+		if (error !== undefined) {
+			console.error(error);
+		}
+	}
+
 	async declareWinner(
 		gameId: string,
 		who: 0 | 1,
