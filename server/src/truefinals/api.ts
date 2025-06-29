@@ -6,19 +6,45 @@ class TrueFinals {
 	userId: string;
 	client: Client<paths, `${string}/${string}`>;
 
+	tournaments: string[];
+	activeTournament: string;
+
 	constructor(userId: string, userKey: string) {
 		this.userId = userId;
 		this.apiKey = userKey;
 
 		const client = createClient<paths>({ baseUrl: 'https://truefinals.com/api/' });
 		this.client = client;
+
+		this.tournaments = process.env.TF_TOURNAMENT_IDS.split(',').map((id) => id.trim());
+		this.activeTournament = this.tournaments[0];
 	}
 
-	async getTourney() {
+	async getAvailableTournaments() {
+		return await Promise.all(
+			this.tournaments.map(async (tournamentId) => {
+				return await this.getTourney(tournamentId);
+			})
+		);
+	}
+
+	getActiveTournament() {
+		return this.activeTournament;
+	}
+
+	setActiveTournament(tournamentId: string) {
+		if (this.tournaments.includes(tournamentId)) {
+			this.activeTournament = tournamentId;
+		} else {
+			throw new Error(`Tournament ID ${tournamentId} is not available.`);
+		}
+	}
+
+	async getTourney(id: string = this.activeTournament) {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}', {
 			params: {
 				path: {
-					tournamentID: process.env.TF_TOURNAMENT_ID
+					tournamentID: id
 				},
 				header: {
 					'x-api-key': this.apiKey,
@@ -38,7 +64,7 @@ class TrueFinals {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/players', {
 			params: {
 				path: {
-					tournamentID: process.env.TF_TOURNAMENT_ID
+					tournamentID: this.activeTournament
 				},
 				header: {
 					'x-api-key': this.apiKey,
@@ -58,7 +84,7 @@ class TrueFinals {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games', {
 			params: {
 				path: {
-					tournamentID: process.env.TF_TOURNAMENT_ID
+					tournamentID: this.activeTournament
 				},
 				header: {
 					'x-api-key': this.apiKey,
@@ -78,7 +104,7 @@ class TrueFinals {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games/{gameID}', {
 			params: {
 				path: {
-					tournamentID: process.env.TF_TOURNAMENT_ID,
+					tournamentID: this.activeTournament,
 					gameID
 				},
 				header: {
@@ -101,7 +127,7 @@ class TrueFinals {
 			{
 				params: {
 					path: {
-						tournamentID: process.env.TF_TOURNAMENT_ID,
+						tournamentID: this.activeTournament,
 						playerID
 					},
 					header: {
@@ -122,13 +148,14 @@ class TrueFinals {
 	async declareWinner(
 		gameId: string,
 		who: 0 | 1,
-		result: 'KO' | 'TO' | 'JD' | 'TKO' | 'HLD' | 'BY' | 'DQ' | 'FF' | 'T'
+		result: 'KO' | 'TO' | 'JD' | 'TKO' | 'HLD' | 'BY' | 'DQ' | 'FF' | 'T',
+		tournamentId: string = this.activeTournament
 	) {
 		console.log(gameId);
 		const { error } = await this.client.POST('/v1/tournaments/{tournamentID}/games/{gameID}', {
 			params: {
 				path: {
-					tournamentID: process.env.TF_TOURNAMENT_ID,
+					tournamentID: tournamentId,
 					gameID: gameId
 				},
 				header: {

@@ -9,6 +9,7 @@ type MatchState = {
 	robot2: Robot;
 	compName: string;
 	compMatch: string;
+	compEvent: string;
 };
 
 export { Robot, MatchState };

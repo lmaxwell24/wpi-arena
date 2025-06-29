@@ -12,6 +12,7 @@ class ArenaSocket {
 	loadedMatch: string = '';
 	matchPeriod: string = 'end';
 	audienceOverlayVisible: boolean = true;
+
 	lowerThird: {
 		visible: boolean;
 		title: string;
@@ -34,7 +35,8 @@ class ArenaSocket {
 			robot1: { name: 'Robot 1', ready: false },
 			robot2: { name: 'Robot 2', ready: false },
 			compName: process.env.TOURNAMENT_NAME,
-			compMatch: 'Test Match'
+			compMatch: 'Test Match',
+			compEvent: ''
 		};
 
 		this.timer.startThread();
@@ -117,14 +119,15 @@ class ArenaSocket {
 		}
 	}
 
-	setMatch(robot1?: Robot, robot2?: Robot, compMatch?: string) {
+	setMatch(robot1?: Robot, robot2?: Robot, compMatch?: string, compEvent?: string) {
 		this.loadedMatch = '';
 		this.restart();
 		this.matchState = {
 			...this.matchState,
 			robot1: { ...this.matchState.robot1, ...robot1, ready: false },
 			robot2: { ...this.matchState.robot2, ...robot2, ready: false },
-			compMatch: compMatch || this.matchState.compMatch
+			compMatch: compMatch || this.matchState.compMatch,
+			compEvent: compEvent || this.matchState.compEvent
 		};
 		this.io.emit('matchUpdate', { robot1, robot2, compMatch });
 		this.io.emit('robotReady', { robotId: 0, ready: false });

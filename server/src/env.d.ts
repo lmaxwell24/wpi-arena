@@ -3,7 +3,7 @@ declare global {
 		interface ProcessEnv {
 			TF_API_USER: string;
 			TF_API_KEY: string;
-			TF_TOURNAMENT_ID: string;
+			TF_TOURNAMENT_IDS: string;
 			TOURNAMENT_NAME: string;
 			PORT: string;
 			IP: string;

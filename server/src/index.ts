@@ -35,21 +35,21 @@ const main = async () => {
 		res.send(await tfApi.getTourney());
 	});
 
-  app.post('/api/tournament', async (req: Request<{}, {}, { tournamentId: string }>, res) => {
-    if (!req.body.tournamentId) {
-      res.status(400).send('Tournament ID is required');
-      return;
-    }
-    tfApi.setActiveTournament(req.body.tournamentId);
-    res.status(200).send('OK');
-  });
+	app.post('/api/tournament', async (req: Request<{}, {}, { tournamentId: string }>, res) => {
+		if (!req.body.tournamentId) {
+			res.status(400).send('Tournament ID is required');
+			return;
+		}
+		tfApi.setActiveTournament(req.body.tournamentId);
+		res.status(200).send('OK');
+	});
 
-  app.get('/api/tournament', (_req, res) => {
-    res.status(200).send({
-      activeTournament: tfApi.getActiveTournament(),
-      availableTournaments: tfApi.getAvailableTournaments()
-    });
-  });
+	app.get('/api/tournament', async (_req, res) => {
+		res.status(200).send({
+			activeTournament: tfApi.getActiveTournament(),
+			availableTournaments: await tfApi.getAvailableTournaments()
+		});
+	});
 
 	app.get('/api/players', async (_req, res) => {
 		res.send(await tfApi.getPlayers());
@@ -85,31 +85,38 @@ const main = async () => {
 		}
 	);
 
-	app.post('/api/load_match', async (req: Request<{}, {}, { matchId: string }>, res) => {
-		let currentMatch = await tfApi.getMatchInfo(req.body.matchId);
-		if (isApiError(currentMatch)) {
-			res.status(400).send('Invalid match ID');
-			return;
-		}
-		let player1 = await tfApi.getPlayer(currentMatch.slots[0].playerID as string);
-		if (isApiError(player1)) {
-			res.status(400).send('Invalid player ID for player 1');
-			return;
-		}
-		let player2 = await tfApi.getPlayer(currentMatch.slots[1].playerID as string);
-		if (isApiError(player2)) {
-			res.status(400).send('Invalid player ID for player 2');
-			return;
-		}
+	app.post(
+		'/api/load_match',
+		async (req: Request<{}, {}, { matchId: string; tournamentId?: string }>, res) => {
+			if (req.body.tournamentId) {
+				tfApi.setActiveTournament(req.body.tournamentId);
+			}
+			let currentMatch = await tfApi.getMatchInfo(req.body.matchId);
+			if (isApiError(currentMatch)) {
+				res.status(400).send('Invalid match ID');
+				return;
+			}
+			let player1 = await tfApi.getPlayer(currentMatch.slots[0].playerID as string);
+			if (isApiError(player1)) {
+				res.status(400).send('Invalid player ID for player 1');
+				return;
+			}
+			let player2 = await tfApi.getPlayer(currentMatch.slots[1].playerID as string);
+			if (isApiError(player2)) {
+				res.status(400).send('Invalid player ID for player 2');
+				return;
+			}
 
-		arena.setMatch(
-			{ ...player1, photoUrl: player1.photoUrl as string | undefined, ready: false },
-			{ ...player2, photoUrl: player2.photoUrl as string | undefined, ready: false },
-			currentMatch.name
-		);
-		arena.setMatchId(currentMatch.id);
-		res.send(currentMatch);
-	});
+			arena.setMatch(
+				{ ...player1, photoUrl: player1.photoUrl as string | undefined, ready: false },
+				{ ...player2, photoUrl: player2.photoUrl as string | undefined, ready: false },
+				currentMatch.name,
+				tfApi.getActiveTournament()
+			);
+			arena.setMatchId(currentMatch.id);
+			res.send(currentMatch);
+		}
+	);
 
 	app.post(
 		'/api/winner',
@@ -128,7 +135,12 @@ const main = async () => {
 			console.log(arena.loadedMatch);
 			arena.setWinner(req.body.who, req.body.how);
 			if (arena.loadedMatch != '') {
-				await tfApi.declareWinner(arena.loadedMatch, req.body.who, req.body.how);
+				await tfApi.declareWinner(
+					arena.loadedMatch,
+					req.body.who,
+					req.body.how,
+					arena.matchState.compEvent
+				);
 				res.status(200).send('OK');
 			} else {
 				res.status(200).send('No loaded match');

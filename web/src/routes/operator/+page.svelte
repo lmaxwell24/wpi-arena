@@ -44,6 +44,8 @@
 	let games = [];
 	let test = {};
 	let selectedGame = {};
+	let possibleTournaments = [];
+	let selectedTournament = '';
 	let selectedGameInfo = {};
 
 	let lowerThird = {
@@ -65,6 +67,13 @@
 		let games_raw = await callApi('/api/games');
 		games = await games_raw.json();
 		console.log(games);
+
+		let tournaments_raw = await callApi('/api/tournament');
+		let tournamentInfo = await tournaments_raw.json();
+		let { availableTournaments, activeTournament } = tournamentInfo;
+		selectedTournament = activeTournament;
+		possibleTournaments = availableTournaments;
+		console.log(tournamentInfo);
 	};
 
 	const getPlayerById = (id: number) => {
@@ -228,6 +237,37 @@
 					<div class="rounded-lg bg-slate-700/50 p-4">
 						<h3 class="mb-4 text-center text-lg font-medium text-white">Tournament Match</h3>
 						<div class="space-y-3">
+							{#if possibleTournaments.length > 1}
+								<!-- Only show if there are multiple tournaments -->
+								<div>
+									<label class="mb-1 block text-sm font-medium text-slate-300"
+										>Available Tournaments</label
+									>
+									<select
+										bind:value={selectedTournament}
+										class="select w-full"
+										onchange={async () => {
+											await callApi('/api/tournament', { tournamentId: selectedTournament }, 'POST')
+												.then(() => {
+													console.log(`Tournament ${selectedTournament} loaded`);
+												})
+												.then(async () => {
+													// Reload the games after loading the tournament
+													await loadDatabase();
+												})
+												.catch((error) => {
+													console.error('Failed to load tournament:', error);
+												});
+										}}
+									>
+										{#each possibleTournaments as tournament}
+											<option value={tournament.id}>
+												{tournament.title} ({tournament.id})
+											</option>
+										{/each}
+									</select>
+								</div>
+							{/if}
 							<div>
 								<label class="mb-1 block text-sm font-medium text-slate-300"
 									>Available Matches</label
