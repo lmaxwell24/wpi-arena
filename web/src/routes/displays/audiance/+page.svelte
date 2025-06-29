@@ -120,9 +120,17 @@
 		out:slide={{ duration: 300, axis: 'x' }}
 	>
 		<div class="bg-combat-black/80 max-w-3xl rounded-lg p-4 text-left shadow-xl">
-			<h2 class="text-7xl font-bold text-white">{lowerThird.title}</h2>
+			{#key lowerThird.title}
+				<h2 class="text-7xl font-bold text-white" in:fade>
+					{lowerThird.title}
+				</h2>
+			{/key}
 			<hr class="my-4 border-t-2 border-zinc-500" />
-			<p class="text-2xl text-slate-300">{lowerThird.subtitle}</p>
+			{#key lowerThird.subtitle}
+				<p class="text-2xl text-slate-300" in:fade>
+					{lowerThird.subtitle}
+				</p>
+			{/key}
 		</div>
 	</div>
 {/if}

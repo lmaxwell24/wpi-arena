@@ -152,7 +152,11 @@
 
 	const loadTFMatch = async () => {
 		selectedGameInfo = await (
-			await callApi('/api/load_match', { matchId: selectedGame.id }, 'POST')
+			await callApi(
+				'/api/load_match',
+				{ matchId: selectedGame.id, tournamentId: selectedTournament },
+				'POST'
+			)
 		).json();
 	};
 
