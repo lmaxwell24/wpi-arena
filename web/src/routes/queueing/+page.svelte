@@ -40,15 +40,15 @@
 	const getGameStateDisplays = (state: string) => {
 		switch (state) {
 			case 'available':
-				return 'bg-green-100 text-green-800';
+				return 'bg-green-600/40 text-green-100';
 			case 'called':
-				return 'bg-yellow-100 text-yellow-800';
+				return 'bg-yellow-600/40 text-yellow-100';
 			case 'active':
-				return 'bg-blue-100 text-blue-800';
+				return 'bg-blue-600/40 text-blue-100';
 			case 'hold':
-				return 'bg-zinc-100 text-zinc-800';
+				return 'bg-zinc-600/40 text-zinc-100';
 			default:
-				return 'bg-gray-100 text-gray-800';
+				return 'bg-gray-600/40 text-gray-100';
 		}
 	};
 
@@ -84,6 +84,15 @@
 							? 'border-zinc-500/50'
 							: ''} {game.state !== 'available' ? 'border-10 border-solid' : ''}"
 			>
+				<div class="mb-4 flex items-center justify-between">
+					<span
+						class="text-md w-full px-2 py-1 text-center font-semibold {getGameStateDisplays(
+							game.state
+						)}"
+					>
+						{game.state || 'N/A'}
+					</span>
+				</div>
 				<div class="grid grid-cols-3">
 					<div class="robot-card bg-gradient-to-r from-blue-500/10 to-blue-600/10">
 						<div class="text-center">
@@ -99,16 +108,9 @@
 					</div>
 					<!-- Status Indicator -->
 					<div class="flex flex-col items-center justify-center">
-						<h1 class="mb-2 text-2xl font-bold text-white">
+						<h1 class="mb-2 text-4xl font-bold text-white">
 							{game.name}
 						</h1>
-						<span
-							class="inline-flex rounded-full px-2 py-1 text-xs font-semibold {getGameStateDisplays(
-								game.state
-							)}"
-						>
-							{game.state || 'N/A'}
-						</span>
 					</div>
 					<div class="robot-card bg-gradient-to-r from-red-500/10 to-red-600/10">
 						<div class="text-center">
@@ -133,7 +135,7 @@
 						<h3
 							class="w-full bg-gradient-to-br from-yellow-600 to-yellow-700 bg-clip-text text-center text-lg font-bold text-transparent"
 						>
-							(Called since {timeRelative(currentTime, game.calledSince)})
+							(Called {timeRelative(currentTime, game.calledSince)})
 						</h3>
 					{/if}
 				</div>
