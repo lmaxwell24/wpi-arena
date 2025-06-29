@@ -143,7 +143,7 @@
 	>
 		<div class="w-full max-w-6xl">
 			<!-- Competition Header -->
-			<div class="card bg-combat-black/90 border-red-500/30">
+			<div class="card bg-combat-black border-red-500">
 				<div class="card-body py-2 text-center">
 					<span
 						class="mb-2 bg-gradient-to-r from-red-400 to-rose-400 bg-clip-text text-3xl font-bold text-transparent"
@@ -160,7 +160,7 @@
 
 			<!-- Main Match Display -->
 			<div
-				class="from-combat-black/80 to-combat-red/80 grid grid-cols-1 items-stretch bg-gradient-to-br lg:grid-cols-3"
+				class="from-combat-black to-combat-red grid grid-cols-1 items-stretch bg-gradient-to-br lg:grid-cols-3"
 			>
 				<!-- Robot 1 -->
 				<div
@@ -194,13 +194,15 @@
 
 				<!-- Timer/Status Display -->
 				<div class="text-center {matchPeriod == 'winner' ? 'bg-emerald-500/20' : ''}">
-					<div class="from-slate-800/80 to-slate-700/80">
-						<div class="card-body py-8">
+					<div class="h-full from-slate-800/80 to-slate-700/80">
+						<div class="card-body h-full py-8">
 							{#if matchPeriod != 'preload'}
-								<div class="space-y-2">
+								<div class="h-full space-y-2">
 									{#if matchPeriod == 'winner'}
-										<div class="mb-4 text-6xl font-bold text-emerald-400">🏆</div>
-										<div class="text-2xl font-bold text-emerald-400">{winnerMethod}</div>
+										<div class="flex h-full flex-col items-center justify-center">
+											<div class="mb-4 text-8xl font-bold text-emerald-400">🏆</div>
+											<div class="text-6xl font-bold text-emerald-400">{winnerMethod}</div>
+										</div>
 									{:else if precount != 0}
 										<div class="timer-display text-7xl">{precount}</div>
 										<div class="text-lg text-slate-300">Starting in...</div>
