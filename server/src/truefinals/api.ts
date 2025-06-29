@@ -62,32 +62,36 @@ class TrueFinals {
 	}
 
 	async getPlayers() {
-		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/players', {
-			params: {
-				path: {
-					tournamentID: this.activeTournament
-				},
-				header: {
-					'x-api-key': this.apiKey,
-					'x-api-user-id': this.userId
+		let returnPlayers = [];
+		for (const tournamentId of this.tournaments) {
+			const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/players', {
+				params: {
+					path: {
+						tournamentID: tournamentId
+					},
+					header: {
+						'x-api-key': this.apiKey,
+						'x-api-user-id': this.userId
+					}
 				}
-			}
-		});
+			});
 
-		if (data !== undefined) {
-			return data;
-		} else {
-			return error;
+			if (data !== undefined) {
+				returnPlayers.push(...data);
+			} else {
+				return error;
+			}
 		}
+		return returnPlayers;
 	}
 
-  async getGames () {
-    const throttledGetGames = pThrottle({
-      limit: 1,
-      interval: 10000
-    })(this.getGamesInternal.bind(this));
-    return await throttledGetGames();
-  }
+	async getGames() {
+		const throttledGetGames = pThrottle({
+			limit: 1,
+			interval: 10000
+		})(this.getGamesInternal.bind(this));
+		return await throttledGetGames();
+	}
 
 	private async getGamesInternal() {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games', {

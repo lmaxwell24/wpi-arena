@@ -233,7 +233,7 @@ const main = async () => {
 		console.log(` Server: http://${host}:${port}`);
 		console.log(` Environment: ${process.env.NODE_ENV || 'development'}`);
 		console.log(
-			` TrueFinals Integration: ${process.env.TF_TOURNAMENT_ID ? 'Enabled' : 'Disabled'}`
+			` TrueFinals Integration: ${process.env.TF_TOURNAMENT_IDS ? 'Enabled' : 'Disabled'}`
 		);
 		console.log(` Match Duration: ${process.env.MATCH_TIME}s`);
 	});
