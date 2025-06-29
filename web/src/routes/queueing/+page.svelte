@@ -73,7 +73,7 @@
 	</div>
 	<!-- Per - game robot and status indicators -->
 	<div class="mx-auto flex w-full max-w-7xl flex-wrap justify-between gap-4 rounded-lg p-4">
-		{#each games.filter((g) => g.state !== 'done') as game}
+		{#each games.filter((g) => g.state !== 'done' && g.slots[0].playerID && g.slots[1].playerID) as game}
 			<div
 				class="max-w-xl grow-1 rounded-lg bg-gradient-to-br from-slate-600/20 to-slate-700/20 p-6 shadow-lg {game.state ===
 				'called'
