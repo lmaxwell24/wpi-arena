@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { io } from '$lib/websocketconnection';
 	import { onMount } from 'svelte';
+	import { Confetti } from 'svelte-confetti';
+	import { fade } from 'svelte/transition';
 
 	let time = 0;
 	let precount = 0;
