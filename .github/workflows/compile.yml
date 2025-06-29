@@ -1,0 +1,38 @@
+name: Compile
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      - name: Install dependencies - web
+        run: cd web && npm install
+
+      - name: Compile TypeScript - web
+        run: cd web && npm run build
+
+      - name: Style check - web
+        run: cd web && npm run check
+
+      - name: Install dependencies - server
+        run: cd server && npm install
+
+      - name: Compile TypeScript - server
+        run: cd server && npm run build
+
+      - name: Style check - server
+        run: cd server && npm run prettier --check . && eslint .
+
