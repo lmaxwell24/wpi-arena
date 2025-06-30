@@ -160,8 +160,10 @@ const main = async () => {
 	app.post('/api/timer', async (req, res) => {
 		switch (req.body.control) {
 			case 'start':
-				await tfApi.markGameActive(arena.loadedMatch, arena.matchState.compEvent);
 				arena.start();
+        if(arena.loadedMatch != '') {
+          await tfApi.markGameActive(arena.loadedMatch, arena.matchState.compEvent);
+        }
 				res.send(200);
 				break;
 			case 'resume':
