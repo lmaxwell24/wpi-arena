@@ -160,7 +160,7 @@
 
 			<!-- Main Match Display -->
 			<div
-				class="from-combat-black to-combat-red grid grid-cols-1 items-stretch bg-gradient-to-br lg:grid-cols-3"
+				class="from-combat-blue via-combat-black to-combat-red grid grid-cols-1 items-stretch bg-gradient-to-r lg:grid-cols-3"
 			>
 				<!-- Robot 1 -->
 				<div
