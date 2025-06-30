@@ -124,7 +124,7 @@
 </script>
 
 <div
-	class="flex min-h-screen items-center justify-center bg-gradient-to-br from-red-900/30 via-slate-900 to-red-900/30 p-8"
+	class="via-rlate-900 flex min-h-screen items-center justify-center bg-gradient-to-br from-red-900/30 to-red-900/30 p-8"
 >
 	<div class="w-full max-w-4xl text-center">
 		<!-- Robot Header -->
@@ -142,7 +142,7 @@
 						>
 							{robotInfo.name}
 						</h1>
-						<p class="text-xl font-medium text-slate-300">Robot 2 Status</p>
+						<p class="text-rslate-300 text-xl font-medium">Robot 2 Status</p>
 						<div class="mt-2 flex items-center justify-end">
 							<div
 								class="status-indicator {isReady ? 'status-active' : 'status-stopped'} mr-3"
@@ -157,14 +157,14 @@
 		</div>
 
 		<!-- Competition Info -->
-		<div class="card mb-8 bg-slate-800/50">
+		<div class="card bg-rslate-800/50 mb-8">
 			<div class="card-body py-4">
 				<div class="text-center">
 					<h2 class="mb-1 text-2xl font-semibold text-white">{matchState.compName}</h2>
-					<p class="text-lg text-slate-300">{matchState.compMatch}</p>
+					<p class="text-rslate-300 text-lg">{matchState.compMatch}</p>
 					<div class="mt-3 flex items-center justify-center space-x-4">
 						<span class="font-semibold text-blue-400">{matchState.robot1.name}</span>
-						<span class="text-slate-400">VS</span>
+						<span class="text-rslate-400">VS</span>
 						<span class="font-semibold text-red-400">{matchState.robot2.name}</span>
 					</div>
 				</div>
@@ -172,31 +172,31 @@
 		</div>
 
 		<!-- Timer Display -->
-		<div class="card mb-8 bg-gradient-to-br from-slate-800/40 to-slate-700/40">
+		<div class="card from-rslate-800/40 to-rslate-700/40 mb-8 bg-gradient-to-br">
 			<div class="card-body py-12">
 				<div class="space-y-6">
 					{#if matchPeriod === 'winner'}
 						<div class="text-8xl font-bold {didWin ? 'text-emerald-400' : 'text-red-400'}">
 							{didWin ? 'VICTORY' : 'DEFEAT'}
 						</div>
-						<div class="text-2xl font-medium text-slate-300">
+						<div class="text-rslate-300 text-2xl font-medium">
 							{winnerMethod}
 						</div>
 					{:else if matchPeriod === 'preload'}
-						<div class="text-8xl font-bold text-slate-300">{matchState.compMatch}</div>
+						<div class="text-rslate-300 text-8xl font-bold">{matchState.compMatch}</div>
 					{:else if matchPeriod === 'start' || matchPeriod === 'pause' || matchPeriod === 'end'}
 						{#if precount > 0}
 							<div class="timer-display text-8xl text-amber-400">
 								{precount}
 							</div>
-							<div class="text-2xl font-medium text-slate-300">Starting in...</div>
+							<div class="text-rslate-300 text-2xl font-medium">Starting in...</div>
 							<div class="status-indicator status-paused mx-auto h-6 w-6"></div>
 						{:else}
 							<div class="text-7xl {matchPeriod === 'pause' ? 'timer-amber' : 'timer-display'}">
 								{Math.floor(time / 60)}:{(time % 60).toFixed(1).padStart(4, '0')}
 							</div>
 
-							<span class="text-xl font-medium text-slate-300">Match Time </span>
+							<span class="text-rslate-300 text-xl font-medium">Match Time </span>
 							<div
 								class="status-indicator {time > 0
 									? 'status-active'
@@ -210,7 +210,7 @@
 
 		{#if matchPeriod === 'preload'}
 			<!-- Ready Button -->
-			<div class="card bg-gradient-to-br from-slate-800/50 to-slate-700/50">
+			<div class="card from-rslate-800/50 to-rslate-700/50 bg-gradient-to-br">
 				<div class="card-body py-8">
 					<button
 						class="btn mx-auto w-full max-w-md px-12 py-6 text-2xl font-bold transition-all duration-300 {isReady
@@ -243,14 +243,14 @@
 						</div>
 					</button>
 
-					<div class="mt-4 text-sm text-slate-400">
+					<div class="text-rslate-400 mt-4 text-sm">
 						Click to toggle your ready status for the match
 					</div>
 				</div>
 			</div>
 		{:else if matchPeriod === 'start' || matchPeriod === 'pause'}
 			<!-- Tap out button -->
-			<div class="card bg-gradient-to-br from-slate-800/50 to-slate-700/50">
+			<div class="card from-rslate-800/50 to-rslate-700/50 bg-gradient-to-br">
 				<div class="card-body py-8">
 					<button
 						class="btn btn-large w-full bg-zinc-500 px-6 py-16 text-2xl font-bold text-white transition-all duration-300 hover:bg-red-700"
