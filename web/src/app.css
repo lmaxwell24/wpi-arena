@@ -110,6 +110,10 @@ body {
 	@apply bg-gradient-to-r from-amber-400 to-yellow-400 bg-clip-text font-mono text-8xl font-bold text-transparent;
 }
 
+.timer-green {
+	@apply bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text font-mono text-8xl font-bold text-transparent;
+}
+
 .robot-card {
 	@apply p-2;
 }
