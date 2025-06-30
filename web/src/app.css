@@ -22,11 +22,11 @@
 	--color-combat-black: #111827;
 	--color-combat-blue: #121b32;
 
-  --color-rslate-900: #280f0e;
-  --color-rslate-800: oklch(0.279 0.041 9.85);
-  --color-rslate-700: oklch(0.372 0.044 20.85);
-  --color-rslate-300: oklch(0.869 0.022 32.31);
-  --color-rslate-400: oklch(0.704 0.04 22.97);
+	--color-rslate-900: #280f0e;
+	--color-rslate-800: oklch(0.279 0.041 9.85);
+	--color-rslate-700: oklch(0.372 0.044 20.85);
+	--color-rslate-300: oklch(0.869 0.022 32.31);
+	--color-rslate-400: oklch(0.704 0.04 22.97);
 }
 
 /* Global enhancements */
@@ -43,7 +43,7 @@ body {
 }
 
 .dot {
-	@apply absolute inset-0 h-full w-full bg-transparent bg-[radial-gradient(#131327_1px,transparent_1px)] [background-size:16px_16px];
+	@apply absolute inset-0 h-full w-full bg-transparent bg-[radial-gradient(#3f3f3f_1px,transparent_1px)] [background-size:16px_16px];
 }
 
 /* Enhanced button styles */
