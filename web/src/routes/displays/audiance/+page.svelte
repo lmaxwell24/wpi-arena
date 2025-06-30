@@ -37,15 +37,8 @@
 
 	// initialize sound files for match events
 	const matchSound = new Howl({
-		src: ['/sounds/match-start.mp3'],
+		src: ['/sounds/match-start.wav'],
 		volume: 0.5,
-		onplay: () => {
-			Howler.stop();
-		}
-	});
-	const winnerSound = new Howl({
-		src: ['/sounds/winner.mp3'],
-		volume: 0.5
 	});
 	const tapoutSound = new Howl({
 		src: ['/sounds/tapout.mp3'],
