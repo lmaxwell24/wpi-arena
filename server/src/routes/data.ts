@@ -12,5 +12,9 @@ export default (tfApi: TrueFinals) => {
 		res.send(await tfApi.getGames());
 	});
 
+	router.get('/allgames', async (_req: Request, res: Response) => {
+		res.send(await tfApi.getAllGames());
+	});
+
 	return router;
 };

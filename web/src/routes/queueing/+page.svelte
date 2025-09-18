@@ -16,7 +16,7 @@
 
 	const loadGameInfo = async () => {
 		try {
-			let games_raw = await callApi('/api/games');
+			let games_raw = await callApi('/api/allgames');
 			games = await games_raw.json();
 			console.log(games);
 		} catch (error) {

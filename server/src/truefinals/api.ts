@@ -130,6 +130,38 @@ class TrueFinals {
 		}
 	}
 
+	async getAllGames() {
+		const throttledGetGames = pThrottle({
+			limit: 1,
+			interval: 10000
+		})(this.getAllGamesInternal.bind(this));
+		return await throttledGetGames();
+	}
+
+	private async getAllGamesInternal() {
+    // goes through all tournaments and gets all games
+    const allGames = [];
+    for (const tournamentId of this.tournaments) {
+      const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games', {
+        params: {
+          path: {
+            tournamentID: tournamentId
+          },
+          header: {
+            'x-api-key': this.apiKey,
+            'x-api-user-id': this.userId
+          }
+        }
+      });
+      if (data !== undefined) {
+        allGames.push(...data);
+      } else {
+        return error;
+      }
+    }
+    return allGames;
+	}
+
 	async getMatchInfo(gameID: string) {
 		const { data, error } = await this.client.GET('/v1/tournaments/{tournamentID}/games/{gameID}', {
 			params: {

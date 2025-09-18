@@ -5,7 +5,6 @@ import { createServer } from 'node:http';
 import { config } from 'dotenv-safe';
 import cors from 'cors';
 import morgan from 'morgan';
-import { handler } from '../../web/build/handler.ts';
 
 // Import route modules
 import tournamentRoutes from './routes/tournament.ts';
@@ -44,7 +43,6 @@ const main = async () => {
 	app.use('/api', timerRoutes(arena, tfApi));
 	app.use('/api', displayRoutes(arena));
 
-	app.use(handler);
 	server.listen(port, host, 511, () => {
 		console.log('WPI Arena');
 		console.log(` Server: http://${host}:${port}`);
